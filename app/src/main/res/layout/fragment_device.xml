@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.ldnhat.smarthomeapp.ui.device.DeviceViewModel" />
+
+        <variable
+            name="isControl"
+            type="Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/vhDevice"
+            layout="@layout/view_header_bar"
+            />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@+id/dividerLayoutBottom"
+            app:layout_constraintTop_toBottomOf="@id/vhDevice">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constDeviceDetail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="10dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDevice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/device"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDeviceName1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="[Device1]"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/txtDevice"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDeviceName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/name"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceName1" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDeviceNameValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Device1"
+                    app:layout_constraintStart_toEndOf="@id/txtDeviceName"
+                    app:layout_constraintTop_toBottomOf="@id/txtDevice" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDeviceType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/device_type"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceName" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDeviceTypeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="CONTROL"
+                    app:layout_constraintStart_toEndOf="@id/txtDeviceType"
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceNameValue" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDeviceAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/device_action"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceType" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDeviceActionValue"
+                    deviceActionBackground="@{viewModel.deviceAction}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@{String.valueOf(viewModel.deviceAction)}"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/txtDeviceAction"
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceTypeValue" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtCreatedBy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/created_by"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceAction" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtCreatedByValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="admin"
+                    app:layout_constraintStart_toEndOf="@id/txtCreatedBy"
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceActionValue" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtCreatedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/created_date"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtCreatedBy" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtCreatedDateValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="2023"
+                    app:layout_constraintStart_toEndOf="@id/txtCreatedDate"
+                    app:layout_constraintTop_toBottomOf="@id/txtCreatedByValue" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtModifiedBy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/modified_by"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtCreatedDate" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtModifiedByValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="admin"
+                    app:layout_constraintStart_toEndOf="@id/txtModifiedBy"
+                    app:layout_constraintTop_toBottomOf="@id/txtCreatedDateValue" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtModifiedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/modified_date"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtModifiedBy" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtModifiedDateValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="2023"
+                    app:layout_constraintStart_toEndOf="@id/txtModifiedDate"
+                    app:layout_constraintTop_toBottomOf="@id/txtModifiedByValue" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtModifiedDate">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcDeviceTimer"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:clipToPadding="false"
+                        android:padding="6dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:spanCount="2"
+                        tools:itemCount="16"
+                        tools:listitem="@layout/item_device_timer" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <View
+            android:id="@+id/dividerLayoutBottom"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/colorGray10"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/cvButtonTurnDevice" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvButtonTurnDevice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="24dp"
+            android:visibility="gone"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnTurnDevice"
+                deviceActionButtonBackground="@{viewModel.deviceAction}"
+                android:onClick="@{() -> viewModel.selectedStateDevice()}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite" />
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
