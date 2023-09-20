@@ -56,4 +56,22 @@ object AppModule {
     ): AccountApi {
         return remoteDataSource.buildApi(AccountApi::class.java, context)
     }
+
+    @Singleton
+    @Provides
+    fun provideDeviceMonitorApi(
+        remoteDataSource: RemoteDataSource,
+        @ApplicationContext context: Context
+    ): DeviceMonitorApi {
+        return remoteDataSource.buildApi(DeviceMonitorApi::class.java, context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDeviceTokenApi(
+        remoteDataSource: RemoteDataSource,
+        @ApplicationContext context: Context
+    ): DeviceTokenApi {
+        return remoteDataSource.buildApi(DeviceTokenApi::class.java, context)
+    }
 }

@@ -36,6 +36,14 @@
     <string name="title">Title</string>
     <string name="message">Message</string>
     <string name="target">Target</string>
+    <string name="notification_setting">Notification setting</string>
+    <string name="message_request">Message Request</string>
+    <string name="message_response">Message response</string>
+    <string name="device_name">Device name</string>
+    <string name="action">Action</string>
+    <string name="speech_data">Speech data</string>
+    <string name="add_speech_data">Add Speech Data</string>
+    <string name="value">Value</string>
 
     <string-array name="deviceActionList">
         <item>ON</item>

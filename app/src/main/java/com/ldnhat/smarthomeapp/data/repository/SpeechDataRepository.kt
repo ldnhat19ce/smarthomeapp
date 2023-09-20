@@ -2,6 +2,7 @@ package com.ldnhat.smarthomeapp.data.repository
 
 import com.ldnhat.smarthomeapp.data.network.SpeechDataApi
 import com.ldnhat.smarthomeapp.data.request.SpeechDataDTO
+import com.ldnhat.smarthomeapp.data.request.SpeechDataRequest
 import javax.inject.Inject
 
 class SpeechDataRepository @Inject constructor(private val api: SpeechDataApi) :
@@ -21,5 +22,9 @@ class SpeechDataRepository @Inject constructor(private val api: SpeechDataApi) :
 
     suspend fun deleteSpeechData(id: String) = safeApiCall {
         api.deleteSpeechData(id)
+    }
+
+    suspend fun saveSpeechData(speechDataRequest: SpeechDataRequest) = safeApiCall {
+        api.saveSpeechData(speechDataRequest)
     }
 }

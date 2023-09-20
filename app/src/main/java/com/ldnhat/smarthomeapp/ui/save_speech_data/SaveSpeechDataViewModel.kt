@@ -1,32 +1,34 @@
-package com.ldnhat.smarthomeapp.ui.home
+package com.ldnhat.smarthomeapp.ui.save_speech_data
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ldnhat.smarthomeapp.common.enumeration.DeviceType
 import com.ldnhat.smarthomeapp.data.network.Resource
 import com.ldnhat.smarthomeapp.data.repository.DeviceRepository
+import com.ldnhat.smarthomeapp.data.repository.SpeechDataRepository
+import com.ldnhat.smarthomeapp.data.request.SpeechDataRequest
 import com.ldnhat.smarthomeapp.data.response.DeviceResponse
+import com.ldnhat.smarthomeapp.data.response.SpeechDataResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val deviceRepository: DeviceRepository) :
-    ViewModel() {
+class SaveSpeechDataViewModel @Inject constructor(
+    private val deviceRepository: DeviceRepository,
+    private val speechDataRepository: SpeechDataRepository
+) : ViewModel() {
+
+    private val _speechData: MutableLiveData<Resource<SpeechDataResponse>> = MutableLiveData()
+    val speechData: LiveData<Resource<SpeechDataResponse>>
+        get() = _speechData
 
     private val _devices: MutableLiveData<Resource<List<DeviceResponse>>> = MutableLiveData()
     val devices: LiveData<Resource<List<DeviceResponse>>>
         get() = _devices
-
-    private var _navigatedToSelectedDevice = MutableLiveData<DeviceResponse>()
-
-    val navigatedToSelectedDevice: LiveData<DeviceResponse>
-        get() = _navigatedToSelectedDevice
 
     init {
         getAllDevices()
@@ -34,7 +36,7 @@ class HomeViewModel @Inject constructor(private val deviceRepository: DeviceRepo
 
     private fun getAllDevices() = viewModelScope.launch {
         _devices.postValue(Resource.Loading)
-        val devicesDeferred = async { deviceRepository.getAllDevices() }
+        val devicesDeferred = async { deviceRepository.getAllDevices(DeviceType.CONTROL) }
         val deviceAwait = devicesDeferred.await()
 
         val deviceListItem = mutableListOf<DeviceResponse>()
@@ -46,18 +48,10 @@ class HomeViewModel @Inject constructor(private val deviceRepository: DeviceRepo
         }
     }
 
-    fun displayDetailDetail(device: DeviceResponse) {
-        _navigatedToSelectedDevice.value = device
-    }
-
-    @SuppressLint("NullSafeMutableLiveData")
-    fun displayDeviceDetailComplete() {
-        _navigatedToSelectedDevice.value = null
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        println("viewModel cleared")
-        viewModelScope.cancel()
+    fun saveSpeechData(speechData: SpeechDataRequest) = viewModelScope.launch {
+        _speechData.postValue(Resource.Loading)
+        val speechDataDeferred = async { speechDataRepository.saveSpeechData(speechData) }
+        val speechDataAwait = speechDataDeferred.await()
+        _speechData.postValue(speechDataAwait)
     }
 }

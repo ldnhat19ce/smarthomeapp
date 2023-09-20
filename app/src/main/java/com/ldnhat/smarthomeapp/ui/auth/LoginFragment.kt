@@ -5,7 +5,9 @@ import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ldnhat.smarthomeapp.data.network.Resource
+import com.ldnhat.smarthomeapp.data.request.DeviceTokenRequest
 import com.ldnhat.smarthomeapp.databinding.FragmentLoginBinding
 import com.ldnhat.smarthomeapp.ui.base.BaseFragment
 import com.ldnhat.smarthomeapp.ui.enable
@@ -23,6 +25,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var deviceToken = ""
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            deviceToken = it.result.toString()
+        }
+
         binding.progressbar.visible(false)
         binding.buttonLogin.enable(false)
 
@@ -33,10 +40,21 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                     lifecycleScope.launch {
                         viewModel.saveAccessTokens(it.value.id_token)
                     }
-                    requireActivity().startNewActivity(HomeActivity::class.java)
+//                    requireActivity().startNewActivity(HomeActivity::class.java)
                 }
                 is Resource.Failure -> handleApiError(it) {
                     login()
+                }
+                else -> {}
+            }
+        }
+
+        viewModel.deviceToken.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    requireActivity().startNewActivity(HomeActivity::class.java)
+                }
+                is Resource.Failure -> handleApiError(it) {
                 }
                 else -> {}
             }
@@ -49,6 +67,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
         binding.buttonLogin.setOnClickListener {
             login()
+            viewModel.saveDeviceToken(DeviceTokenRequest(deviceToken))
         }
     }
 

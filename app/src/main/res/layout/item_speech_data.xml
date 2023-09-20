@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="speechData"
+            type="com.ldnhat.smarthomeapp.data.response.SpeechDataResponse" />
+
+        <variable
+            name="clickListener"
+            type="com.ldnhat.smarthomeapp.ui.speech_data.SpeechDataAdapter.OnClickListener" />
+
+        <variable
+            name="position"
+            type="Integer" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtMessageRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/message_request"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtMessageRequestValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@{speechData.messageRequest}"
+            app:layout_constraintStart_toEndOf="@id/txtMessageRequest"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtMessageResponse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/message_response"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtMessageRequest" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtMessageResponseValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@{speechData.messageResponse}"
+            app:layout_constraintStart_toEndOf="@id/txtMessageResponse"
+            app:layout_constraintTop_toBottomOf="@id/txtMessageRequestValue" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtDeviceName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/device_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtMessageResponse" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtDeviceNameValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@{speechData.deviceDTO.name}"
+            app:layout_constraintStart_toEndOf="@id/txtDeviceName"
+            app:layout_constraintTop_toBottomOf="@id/txtMessageResponseValue" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/action"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtDeviceName" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtActionValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@{String.valueOf(speechData.deviceDTO.deviceAction)}"
+            app:layout_constraintStart_toEndOf="@id/txtAction"
+            app:layout_constraintTop_toBottomOf="@id/txtDeviceNameValue" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="13dp"
+            android:background="@color/colorRed"
+            android:text="@string/delete"
+            android:onClick="@{() -> clickListener.onclick(speechData, position)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/dividerLayoutBottom"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/colorGray10"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtActionValue" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

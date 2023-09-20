@@ -125,6 +125,27 @@
                     app:layout_constraintTop_toBottomOf="@id/txtDeviceTypeValue" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDeviceValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/value"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceAction" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDevicevValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/txtDeviceValue"
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceActionValue" />
+
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtCreatedBy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -133,7 +154,7 @@
                     android:text="@string/created_by"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtDeviceAction" />
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceValue" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtCreatedByValue"
@@ -143,7 +164,7 @@
                     android:layout_marginTop="10dp"
                     android:text="admin"
                     app:layout_constraintStart_toEndOf="@id/txtCreatedBy"
-                    app:layout_constraintTop_toBottomOf="@id/txtDeviceActionValue" />
+                    app:layout_constraintTop_toBottomOf="@id/txtDevicevValue" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtCreatedDate"
@@ -222,6 +243,7 @@
                         android:layout_height="0dp"
                         android:clipToPadding="false"
                         android:padding="6dp"
+                        android:visibility="gone"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -229,6 +251,21 @@
                         app:spanCount="2"
                         tools:itemCount="16"
                         tools:listitem="@layout/item_device_timer" />
+
+                    <com.db.williamchart.view.LineChartView
+                        android:id="@+id/chartDeviceMonitor"
+                        android:layout_width="0dp"
+                        android:layout_height="300dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:chart_gridEffect="dotted"
+                        app:chart_labelsColor="#0D47A1"
+                        app:chart_labelsSize="6sp"
+                        app:chart_lineColor="#000000"
+                        app:chart_lineThickness="3dp"
+                        app:chart_smoothLine="true"
+                        />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
@@ -241,6 +278,17 @@
             android:background="@color/colorGray10"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/cvButtonTurnDevice" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnNotificationSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/notification_setting"
+            app:layout_constraintBottom_toTopOf="@id/cvButtonTurnDevice"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@android:drawable/ic_input_add" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvButtonTurnDevice"

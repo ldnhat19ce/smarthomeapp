@@ -1,5 +1,6 @@
 package com.ldnhat.smarthomeapp.data.repository
 
+import com.ldnhat.smarthomeapp.common.enumeration.DeviceType
 import com.ldnhat.smarthomeapp.data.network.DeviceApi
 import com.ldnhat.smarthomeapp.data.request.DeviceRequest
 import javax.inject.Inject
@@ -20,5 +21,9 @@ class DeviceRepository @Inject constructor(private val api: DeviceApi) : BaseRep
 
     suspend fun saveDevice(deviceRequest: DeviceRequest) = safeApiCall {
         api.saveDevice(deviceRequest)
+    }
+
+    suspend fun getAllDevices(deviceType: DeviceType) = safeApiCall {
+        api.getAllDevices(deviceType)
     }
 }
