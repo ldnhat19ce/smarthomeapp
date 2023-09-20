@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ldnhat.smarthomeapp.common.enumeration.DeviceAction
 import com.ldnhat.smarthomeapp.data.network.Resource
+import com.ldnhat.smarthomeapp.data.repository.DeviceMonitorRepository
 import com.ldnhat.smarthomeapp.data.repository.DeviceRepository
 import com.ldnhat.smarthomeapp.data.repository.DeviceTimerRepository
+import com.ldnhat.smarthomeapp.data.response.DeviceMonitorResponse
 import com.ldnhat.smarthomeapp.data.response.DeviceResponse
 import com.ldnhat.smarthomeapp.data.response.DeviceTimerResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DeviceViewModel @Inject constructor(
     private val deviceRepository: DeviceRepository,
-    private val deviceTimerRepository: DeviceTimerRepository
+    private val deviceTimerRepository: DeviceTimerRepository,
+    private val deviceMonitorRepository: DeviceMonitorRepository
 ) : ViewModel() {
 
     private val _device: MutableLiveData<Resource<DeviceResponse>> = MutableLiveData()
@@ -43,6 +46,11 @@ class DeviceViewModel @Inject constructor(
         MutableLiveData()
     val actionDevice: LiveData<Resource<DeviceTimerResponse>>
         get() = _actionDevice
+
+    private val _deviceMonitors: MutableLiveData<Resource<List<DeviceMonitorResponse>>> =
+        MutableLiveData()
+    val deviceMonitors: LiveData<Resource<List<DeviceMonitorResponse>>>
+        get() = _deviceMonitors
 
     fun getDeviceById(deviceId: String) = viewModelScope.launch {
         _device.postValue(Resource.Loading)
@@ -110,6 +118,20 @@ class DeviceViewModel @Inject constructor(
 
     fun selectedStateDeviceComplete() {
         _btnActionDevice.value = false
+    }
+
+    fun getAllDeviceMonitors(id: String) = viewModelScope.launch {
+        _deviceMonitors.postValue(Resource.Loading)
+        val deviceMonitorsDeferred = async { deviceMonitorRepository.getAllDeviceMonitor(id) }
+        val deviceMonitorsAwait = deviceMonitorsDeferred.await()
+
+        val deviceMonitorsListItem = mutableListOf<DeviceMonitorResponse>()
+        if (deviceMonitorsAwait is Resource.Success) {
+            deviceMonitorsListItem.addAll(deviceMonitorsAwait.value)
+            _deviceMonitors.postValue(Resource.Success(deviceMonitorsListItem))
+        } else {
+            Resource.Failure(false, null, null)
+        }
     }
 
     override fun onCleared() {

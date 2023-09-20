@@ -118,5 +118,4 @@ class VoiceFragment : Fragment() {
         super.onDestroy()
         speechRecognizer.destroy()
     }
-
 }

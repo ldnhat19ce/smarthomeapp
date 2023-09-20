@@ -46,6 +46,10 @@ class HomeFragment : Fragment() {
             findNavController().navigate(HomeFragmentDirections.actionToSaveDevice())
         }
 
+        binding.speechData.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeToSpeechData())
+        }
+
         binding.lifecycleOwner = this
         return binding.root
     }

@@ -6,8 +6,9 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class AppUtils {
-
     companion object {
+        const val TOKEN = "token"
+        const val DEVICE_TOKEN = "device_token"
         fun convertStringToInstant(dateTime : String) : String {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)

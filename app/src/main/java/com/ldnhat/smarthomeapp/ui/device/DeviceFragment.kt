@@ -1,6 +1,7 @@
 package com.ldnhat.smarthomeapp.ui.device
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,6 +26,8 @@ class DeviceFragment : Fragment() {
     private val viewModel by viewModels<DeviceViewModel>()
 
     private lateinit var deviceTimerAdapter: DeviceTimerAdapter
+
+    private var lineDeviceMonitor = listOf<Pair<String, Float>>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,6 +71,35 @@ class DeviceFragment : Fragment() {
 
         } else {
             setViewDeviceMonitor(binding)
+            viewModel.getAllDeviceMonitors(device.id)
+            handleDeviceMonitorFirebase(device, binding)
+            viewModel.deviceMonitors.observe(viewLifecycleOwner) {
+                when (it) {
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        if (it.value.isNotEmpty()) {
+                            lineDeviceMonitor = it.value.map { Pair(it.value, it.value.toFloat()) }.toList()
+                            binding.apply {
+                                chartDeviceMonitor.gradientFillColors =
+                                    intArrayOf(
+                                        Color.parseColor("#33F0FF"),
+                                        Color.TRANSPARENT
+                                    )
+                                chartDeviceMonitor.animation.duration = animationDuration
+
+                                chartDeviceMonitor.animate(lineDeviceMonitor)
+                            }
+                        }
+                    }
+                    is Resource.Failure -> {}
+                }
+            }
+
+
+        }
+
+        binding.btnNotificationSetting.setOnClickListener {
+            findNavController().navigate(DeviceFragmentDirections.actionDeviceToNotificationSetting())
         }
 
         requireActivity().onBackPressedDispatcher.addCallback {
@@ -79,6 +111,10 @@ class DeviceFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
+    }
+
+    companion object {
+        private const val animationDuration = 1000L
     }
 
     private fun customHeaderBar(binding: FragmentDeviceBinding) {
@@ -124,6 +160,9 @@ class DeviceFragment : Fragment() {
         binding.dividerLayoutBottom.visibility = View.VISIBLE
         binding.cvButtonTurnDevice.visibility = View.VISIBLE
         binding.rcDeviceTimer.visibility = View.VISIBLE
+        binding.chartDeviceMonitor.visibility = View.GONE
+        binding.txtDeviceValue.visibility = View.GONE
+        binding.txtDevicevValue.visibility = View.GONE
     }
 
     private fun setViewDeviceMonitor(binding: FragmentDeviceBinding) {
@@ -132,6 +171,9 @@ class DeviceFragment : Fragment() {
         binding.dividerLayoutBottom.visibility = View.GONE
         binding.cvButtonTurnDevice.visibility = View.GONE
         binding.rcDeviceTimer.visibility = View.GONE
+        binding.chartDeviceMonitor.visibility = View.VISIBLE
+        binding.txtDeviceValue.visibility = View.VISIBLE
+        binding.txtDevicevValue.visibility = View.VISIBLE
     }
 
     private fun handleDeviceFirebase(device: DeviceResponse) {
@@ -146,6 +188,23 @@ class DeviceFragment : Fragment() {
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("Firebase", snapshot.data?.get("action").toString())
                     viewModel.onDeviceAction(snapshot.data?.get("action").toString())
+                }
+            }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun handleDeviceMonitorFirebase(device: DeviceResponse, binding: FragmentDeviceBinding) {
+        val db = Firebase.firestore
+        db.collection("develop").document("device_monitor").collection(device.createdBy)
+            .document(device.id).addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.d("Firebase", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("Firebase", snapshot.data?.get("value").toString())
+                    binding.txtDevicevValue.text = snapshot.data?.get("value").toString() + " " + snapshot.data?.get("unitMeasure").toString()
                 }
             }
     }
