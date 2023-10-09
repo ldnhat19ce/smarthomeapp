@@ -8,8 +8,50 @@
             android:id="@+id/vhBleHome"
             layout="@layout/view_header_bar" />
 
+<!--        <ImageView-->
+<!--            android:id="@+id/imgAnimation2"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:src="@drawable/circle"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/vhBleHome"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"/>-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imgAnimation1"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:src="@drawable/circle"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/vhBleHome"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"/>-->
+
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/buttonConnect"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            style="@style/AppTheme.ButtonStyle"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:text="@string/scan"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/vhBleHome"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
+
+        <TextView
+            android:id="@+id/textViewAutoconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/text_static_autoconnect"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vhBleHome" />
+
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switchConnect"
+            android:id="@+id/buttonConnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -139,17 +181,6 @@
                 android:text="@string/text_default_logs_value" />
 
         </ScrollView>
-
-        <TextView
-            android:id="@+id/textViewAutoconnect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/text_static_autoconnect"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/vhBleHome" />
 
         <Button
             android:id="@+id/buttonClearLog"

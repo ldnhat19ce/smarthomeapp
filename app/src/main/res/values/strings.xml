@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">smarthomeapp</string>
+    <string name="app_name">Smarthome</string>
     <string name="don_t_have_an_account_register_now">Don\'t have an account? <b>Register Now</b></string>
     <string name="email">email</string>
     <string name="email_hint">example@mail.czom</string>
@@ -73,4 +73,6 @@
     <string name="text_default_write_value">Android says Hi</string>
     <string name="text_hint_write_value">String value for write</string>
     <string name="text_default_logs_value">Logs:</string>
+    <string name="scan">Scan</string>
+    <string name="stop">Stop</string>
 </resources>
