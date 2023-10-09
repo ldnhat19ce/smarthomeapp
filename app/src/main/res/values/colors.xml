@@ -29,4 +29,7 @@
     <color name="colorBrandYellow">#ffcf6f</color>
     <color name="transparent">#00000000</color>
     <color name="colorGray10">#e8e8e8</color>
+    <color name="light_blue">#8ED1FC</color>
+    <color name="blue">#4c51c6</color>
+    <color name="night_blue">#607ff2</color>
 </resources>
