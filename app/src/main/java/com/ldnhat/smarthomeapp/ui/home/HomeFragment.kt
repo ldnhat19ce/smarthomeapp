@@ -1,6 +1,7 @@
 package com.ldnhat.smarthomeapp.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,15 +9,27 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.type.DateTime
 import com.ldnhat.smarthomeapp.R
+import com.ldnhat.smarthomeapp.common.enumeration.DeviceType
+import com.ldnhat.smarthomeapp.data.network.Resource
+import com.ldnhat.smarthomeapp.data.response.DeviceResponse
 import com.ldnhat.smarthomeapp.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private val viewModel by lazy {
         ViewModelProvider(this)[HomeViewModel::class.java]
     }
+
+    private var device : DeviceResponse = DeviceResponse()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +47,27 @@ class HomeFragment : Fragment() {
             if (it != null) {
                 this.findNavController().navigate(HomeFragmentDirections.actionToDeviceDetail(it))
                 viewModel.displayDeviceDetailComplete()
+            }
+        }
+
+        viewModel.devices.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.any { v -> v.deviceType == DeviceType.MONITOR }) {
+                        val deviceInit = it.value.filter { v -> v.deviceType == DeviceType.MONITOR }[0]
+                        val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale("vi", "VN"))
+                        val date = formatter.parse(deviceInit.lastModifiedDateConverter)?.toInstant() ?: Date().toInstant()
+
+                        val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm", Locale("us", "VN"))
+                            .withZone(ZoneOffset.UTC)
+
+                        deviceInit.lastModifiedDate = dateTimeFormatter.format(date)
+
+
+                        viewModel.setDeviceInit(deviceInit)
+                    }
+                }
+                else -> {}
             }
         }
 

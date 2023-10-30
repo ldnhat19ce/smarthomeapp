@@ -13,6 +13,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.*
 import android.util.Log
 import android.view.View
@@ -24,6 +26,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.asLiveData
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.ldnhat.smarthomeapp.R
 import com.ldnhat.smarthomeapp.common.constants.CommonConstant
@@ -31,8 +34,16 @@ import com.ldnhat.smarthomeapp.common.enumeration.AskType
 import com.ldnhat.smarthomeapp.common.enumeration.BLELifecycleState
 import com.ldnhat.smarthomeapp.common.extensions.BluetoothGATTExtension
 import com.ldnhat.smarthomeapp.common.utils.AppUtils
+import com.ldnhat.smarthomeapp.data.UserPreferences
 import com.ldnhat.smarthomeapp.databinding.FragmentBleHomeBinding
+import com.ldnhat.smarthomeapp.ui.auth.AuthActivity
+import com.ldnhat.smarthomeapp.ui.home.HomeActivity
+import com.ldnhat.smarthomeapp.ui.startNewActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 @AndroidEntryPoint
@@ -94,23 +105,23 @@ class BLEHomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ble_home)
 
-//        val userPreferences = UserPreferences(this)
-//        val connectivityManager = getSystemService(ConnectivityManager::class.java)
-//        connectivityManager.registerDefaultNetworkCallback(object :
-//            ConnectivityManager.NetworkCallback() {
-//            override fun onAvailable(network: Network) {
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    withContext(Dispatchers.Main) {
-//                        userPreferences.accessToken.asLiveData().observe(this@BLEHomeActivity) {
-//                            val activity =
-//                                if (it == null) AuthActivity::class.java else HomeActivity::class.java
-//                            startNewActivity(activity)
-//                        }
-//                        startNewActivity(HomeActivity::class.java)
-//                    }
-//                }
-//            }
-//        })
+        val userPreferences = UserPreferences(this)
+        val connectivityManager = getSystemService(ConnectivityManager::class.java)
+        connectivityManager.registerDefaultNetworkCallback(object :
+            ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    withContext(Dispatchers.Main) {
+                        userPreferences.accessToken.asLiveData().observe(this@BLEHomeActivity) {
+                            val activity =
+                                if (it == null) AuthActivity::class.java else HomeActivity::class.java
+                            startNewActivity(activity)
+                        }
+                        startNewActivity(HomeActivity::class.java)
+                    }
+                }
+            }
+        })
 
 //        switchConnect.setOnCheckedChangeListener { _, isChecked ->
 //            when (isChecked) {
@@ -386,8 +397,6 @@ class BLEHomeActivity : AppCompatActivity() {
                     )
 
                     // TODO: bonding state
-
-                    // recommended on UI thread https://punchthrough.com/android-ble-guide/
                     Handler(Looper.getMainLooper()).post {
                         lifecycleState = BLELifecycleState.ConnectedDiscovering
                         gatt.discoverServices()
@@ -430,7 +439,6 @@ class BLEHomeActivity : AppCompatActivity() {
             )
 
             if (status == 129 /*GATT_INTERNAL_ERROR*/) {
-                // it should be a rare case, this article recommends to disconnect:
                 // https://medium.com/@martijn.van.welie/making-android-ble-work-part-2-47a3cdaade07
                 AppUtils.appendLog(
                     "ERROR: status=129 (GATT_INTERNAL_ERROR), disconnecting",

@@ -42,6 +42,7 @@
 <!--        app:layout_constraintBaseline_toBaselineOf="@+id/textViewAutoconnect"-->
 <!--        />-->
 
+    <!-- scan   -->
     <ImageView
         android:id="@+id/imgAnimation2"
         android:layout_marginTop="10dp"
@@ -72,7 +73,9 @@
         app:layout_constraintTop_toBottomOf="@id/vhBleHome"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+    <!-- end scan   -->
 
+    <!--  state  -->
     <TextView
         android:id="@+id/textViewLifecycleState"
         android:layout_width="0dp"
@@ -86,6 +89,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonConnect" />
+    <!--  end state  -->
+
+    <!--  read value  -->
+    <TextView
+        android:id="@+id/textViewReadHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_static_read_hint"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewReadValue"
+        app:layout_constraintTop_toBottomOf="@+id/textViewLifecycleState" />
 
     <Button
         android:id="@+id/button_read"
@@ -112,6 +128,19 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewReadHint" />
+    <!--  end read value  -->
+
+    <!-- write value   -->
+    <TextView
+        android:id="@+id/textViewWriteHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_static_write_hint"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/editTextWriteValue"
+        app:layout_constraintTop_toBottomOf="@+id/textViewReadValue" />
 
     <EditText
         android:id="@+id/editTextWriteValue"
@@ -140,6 +169,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/editTextWriteValue" />
+    <!-- end write value   -->
+
+    <!-- indicate   -->
+    <TextView
+        android:id="@+id/textViewIndicateHint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_static_indicate_hint"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewIndicateValue"
+        app:layout_constraintTop_toBottomOf="@+id/editTextWriteValue" />
 
     <TextView
         android:id="@+id/textViewIndicateValue"
@@ -152,38 +194,17 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewIndicateHint" />
 
     <TextView
-        android:id="@+id/textViewWriteHint"
+        android:id="@+id/textViewSubscription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/text_static_write_hint"
+        android:layout_marginEnd="16dp"
+        android:text="@string/text_not_subscribed"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/editTextWriteValue"
-        app:layout_constraintTop_toBottomOf="@+id/textViewReadValue" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/textViewIndicateHint"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <!-- end indicate   -->
 
-    <TextView
-        android:id="@+id/textViewReadHint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/text_static_read_hint"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/textViewReadValue"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLifecycleState" />
-
-    <TextView
-        android:id="@+id/textViewIndicateHint"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/text_static_indicate_hint"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/textViewIndicateValue"
-        app:layout_constraintTop_toBottomOf="@+id/editTextWriteValue" />
-
+    <!-- log   -->
     <ScrollView
         android:id="@+id/scrollViewLog"
         android:layout_width="match_parent"
@@ -225,14 +246,5 @@
         android:text="@string/button_clear_log"
         app:layout_constraintEnd_toEndOf="@+id/scrollViewLog"
         app:layout_constraintTop_toTopOf="@+id/scrollViewLog" />
-
-    <TextView
-        android:id="@+id/textViewSubscription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="@string/text_not_subscribed"
-        android:textSize="14sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textViewIndicateHint"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <!-- end log   -->
 </androidx.constraintlayout.widget.ConstraintLayout>
