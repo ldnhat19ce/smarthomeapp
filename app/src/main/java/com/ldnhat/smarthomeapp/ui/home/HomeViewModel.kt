@@ -28,6 +28,10 @@ class HomeViewModel @Inject constructor(private val deviceRepository: DeviceRepo
     val navigatedToSelectedDevice: LiveData<DeviceResponse>
         get() = _navigatedToSelectedDevice
 
+    private val _deviceInit: MutableLiveData<DeviceResponse> = MutableLiveData()
+    val deviceInit: LiveData<DeviceResponse>
+        get() = _deviceInit
+
     init {
         getAllDevices()
     }
@@ -53,6 +57,10 @@ class HomeViewModel @Inject constructor(private val deviceRepository: DeviceRepo
     @SuppressLint("NullSafeMutableLiveData")
     fun displayDeviceDetailComplete() {
         _navigatedToSelectedDevice.value = null
+    }
+
+    fun setDeviceInit(deviceResponse: DeviceResponse) {
+        _deviceInit.value = deviceResponse
     }
 
     override fun onCleared() {

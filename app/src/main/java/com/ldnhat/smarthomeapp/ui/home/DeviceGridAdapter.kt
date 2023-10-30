@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ldnhat.smarthomeapp.data.response.DeviceResponse
-import com.ldnhat.smarthomeapp.databinding.ItemDevicesBinding
+import com.ldnhat.smarthomeapp.databinding.ItemDevices2Binding
 
 class DeviceGridAdapter(private val clickListener: OnClickListener) :
     ListAdapter<DeviceResponse, DeviceGridAdapter.DeviceViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
-        return DeviceViewHolder(ItemDevicesBinding.inflate(LayoutInflater.from(parent.context)))
+        return DeviceViewHolder(ItemDevices2Binding.inflate(LayoutInflater.from(parent.context)))
     }
 
     override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
@@ -23,7 +23,7 @@ class DeviceGridAdapter(private val clickListener: OnClickListener) :
         holder.bind(device)
     }
 
-    class DeviceViewHolder(private var binding: ItemDevicesBinding) :
+    class DeviceViewHolder(private var binding: ItemDevices2Binding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(device: DeviceResponse) {
             binding.device = device
