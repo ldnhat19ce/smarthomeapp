@@ -15,4 +15,12 @@ class DeviceMonitorRepository @Inject constructor(
     suspend fun getAllDeviceMonitor(id: String) = safeApiCall {
         api.getAllDeviceMonitor(id)
     }
+
+    suspend fun getRangeDeviceMonitor(id : String) = safeApiCall {
+        api.getRangeDeviceMonitor(id)
+    }
+
+    suspend fun getListRangeDeviceMonitor(id: String, type : String) = safeApiCall {
+        api.getListRangeDeviceMonitor(id, type)
+    }
 }

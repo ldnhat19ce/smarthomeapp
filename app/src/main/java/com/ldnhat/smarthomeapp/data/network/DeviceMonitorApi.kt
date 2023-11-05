@@ -13,4 +13,11 @@ interface DeviceMonitorApi : BaseApi {
 
     @POST("device-monitor")
     suspend fun saveDeviceMonitor(@Body deviceMonitorRequest: DeviceMonitorRequest): DeviceMonitorResponse
+
+    @GET("device-monitor/range/{id}")
+    suspend fun getRangeDeviceMonitor(@Path("id") id: String) : DeviceMonitorResponse
+
+    @GET("device-monitor/range/{id}/{type}")
+    suspend fun getListRangeDeviceMonitor(@Path("id") id: String,
+                                          @Path("type") type : String) : List<DeviceMonitorResponse>
 }

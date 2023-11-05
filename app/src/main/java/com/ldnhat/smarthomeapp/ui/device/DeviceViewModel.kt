@@ -52,6 +52,10 @@ class DeviceViewModel @Inject constructor(
     val deviceMonitors: LiveData<Resource<List<DeviceMonitorResponse>>>
         get() = _deviceMonitors
 
+    private val _currentValue : MutableLiveData<String> = MutableLiveData()
+    val currentValue : LiveData<String>
+        get() = _currentValue
+
     fun getDeviceById(deviceId: String) = viewModelScope.launch {
         _device.postValue(Resource.Loading)
         val deviceDeferred = async { deviceRepository.getDeviceById(deviceId) }
@@ -120,9 +124,9 @@ class DeviceViewModel @Inject constructor(
         _btnActionDevice.value = false
     }
 
-    fun getAllDeviceMonitors(id: String) = viewModelScope.launch {
+    fun getAllDeviceMonitors(id: String, type : String) = viewModelScope.launch {
         _deviceMonitors.postValue(Resource.Loading)
-        val deviceMonitorsDeferred = async { deviceMonitorRepository.getAllDeviceMonitor(id) }
+        val deviceMonitorsDeferred = async { deviceMonitorRepository.getListRangeDeviceMonitor(id, type) }
         val deviceMonitorsAwait = deviceMonitorsDeferred.await()
 
         val deviceMonitorsListItem = mutableListOf<DeviceMonitorResponse>()
@@ -132,6 +136,10 @@ class DeviceViewModel @Inject constructor(
         } else {
             Resource.Failure(false, null, null)
         }
+    }
+
+    fun setCurrentValue(value : String) {
+        _currentValue.postValue(value)
     }
 
     override fun onCleared() {

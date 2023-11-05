@@ -9,6 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.type.DateTime
 import com.ldnhat.smarthomeapp.R
 import com.ldnhat.smarthomeapp.common.enumeration.DeviceType
@@ -45,6 +47,7 @@ class HomeFragment : Fragment() {
 
         viewModel.navigatedToSelectedDevice.observe(viewLifecycleOwner) {
             if (it != null) {
+
                 this.findNavController().navigate(HomeFragmentDirections.actionToDeviceDetail(it))
                 viewModel.displayDeviceDetailComplete()
             }
@@ -55,15 +58,31 @@ class HomeFragment : Fragment() {
                 is Resource.Success -> {
                     if (it.value.any { v -> v.deviceType == DeviceType.MONITOR }) {
                         val deviceInit = it.value.filter { v -> v.deviceType == DeviceType.MONITOR }[0]
+                        var modifiedDate : String = deviceInit.lastModifiedDateConverter
                         val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale("vi", "VN"))
-                        val date = formatter.parse(deviceInit.lastModifiedDateConverter)?.toInstant() ?: Date().toInstant()
+                        val date = formatter.parse(modifiedDate)?.toInstant() ?: Date().toInstant()
 
                         val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm", Locale("us", "VN"))
                             .withZone(ZoneOffset.UTC)
 
-                        deviceInit.lastModifiedDate = dateTimeFormatter.format(date)
+                        modifiedDate = dateTimeFormatter.format(date)
+                        viewModel.setLastModifiedDate(modifiedDate)
+                        viewModel.getDeviceMonitorRange(deviceInit.id)
 
+                        val db = Firebase.firestore
+                        db.collection("develop").document("device_monitor")
+                            .collection(deviceInit.createdBy)
+                            .document(deviceInit.id)
+                            .addSnapshotListener{snapshot, e ->
+                                if (e != null) {
+                                    Log.d("Firebase", "Listen failed.", e)
+                                    return@addSnapshotListener
+                                }
 
+                                if (snapshot != null && snapshot.exists()) {
+                                    viewModel.setCurrentDeviceMonitorValue("${snapshot.data?.get("value").toString()}°C")
+                                }
+                            }
                         viewModel.setDeviceInit(deviceInit)
                     }
                 }
@@ -84,7 +103,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(HomeFragmentDirections.actionHomeToSpeechData())
         }
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 

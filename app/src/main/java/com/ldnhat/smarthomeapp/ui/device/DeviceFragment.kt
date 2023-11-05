@@ -7,16 +7,25 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.TextView
 import androidx.activity.addCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.github.aachartmodel.aainfographics.aachartcreator.*
+import com.github.aachartmodel.aainfographics.aaoptionsmodel.AAStyle
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
 import com.ldnhat.smarthomeapp.R
 import com.ldnhat.smarthomeapp.common.enumeration.DeviceType
+import com.ldnhat.smarthomeapp.common.extensions.FilterDeviceModel
 import com.ldnhat.smarthomeapp.data.network.Resource
+import com.ldnhat.smarthomeapp.data.response.DeviceMonitorResponse
 import com.ldnhat.smarthomeapp.data.response.DeviceResponse
 import com.ldnhat.smarthomeapp.databinding.FragmentDeviceBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +45,10 @@ class DeviceFragment : Fragment() {
     ): View {
         val binding: FragmentDeviceBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_device, container, false)
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            findNavController().popBackStack()
+        }
 
         val device: DeviceResponse =
             DeviceFragmentArgs.fromBundle(requireArguments()).selectedDevice
@@ -70,40 +83,79 @@ class DeviceFragment : Fragment() {
             }
 
         } else {
+            val aaChartModel: AAChartModel = AAChartModel()
+                .chartType(AAChartType.Area)
+                .title("${device.name} Line Chart")
+                .axesTextColor("#FFFFFF")
+                .yAxisGridLineWidth(0)
+                .dataLabelsEnabled(true)
+                .titleStyle(AAStyle().color("#FFFFFF"))
+                .animationType(AAChartAnimationType.BouncePast)
+                .zoomType(AAChartZoomType.XY)
+                .backgroundColor(Color.TRANSPARENT)
+                .gradientColorEnable(true)
+                .yAxisMax(60)
+                .series(arrayOf(AASeriesElement().name(device.name).data(arrayOf(0))))
+
+            binding.aaChartView.aa_drawChartWithChartModel(aaChartModel)
+
             setViewDeviceMonitor(binding)
-            viewModel.getAllDeviceMonitors(device.id)
             handleDeviceMonitorFirebase(device, binding)
-            viewModel.deviceMonitors.observe(viewLifecycleOwner) {
-                when (it) {
+            viewModel.deviceMonitors.observe(viewLifecycleOwner) { response ->
+                when (response) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        if (it.value.isNotEmpty()) {
-                            lineDeviceMonitor = it.value.map { Pair(it.value, it.value.toFloat()) }.toList()
-                            binding.apply {
-                                chartDeviceMonitor.gradientFillColors =
-                                    intArrayOf(
-                                        Color.parseColor("#33F0FF"),
-                                        Color.TRANSPARENT
-                                    )
-                                chartDeviceMonitor.animation.duration = animationDuration
+                        val list: List<DeviceMonitorResponse> = response.value
+//                        lineDeviceMonitor = if(list.isEmpty()) {
+//                            listOf(Pair("0", 0F))
+//                        } else {
+//                            list.map { deviceMonitor -> Pair(deviceMonitor.value, deviceMonitor.value.toFloat()) }.toList()
+//                        }
 
-                                chartDeviceMonitor.animate(lineDeviceMonitor)
-                            }
-                        }
+                        binding.aaChartView
+                            .aa_onlyRefreshTheChartDataWithChartOptionsSeriesArray(
+                                arrayOf(
+                                    AASeriesElement()
+                                        .data(list.map { deviceMonitor -> deviceMonitor.value.toFloat() }
+                                            .toTypedArray())
+                                )
+                            )
+
+
                     }
                     is Resource.Failure -> {}
                 }
             }
 
+            val deviceFilterList: List<FilterDeviceModel> = readDeviceFilter()
+            val deviceFilterAdapter = DeviceFilterAdapter(requireContext(), deviceFilterList)
+            val filterAdapter = binding.filterDeviceMonitor
+            filterAdapter.adapter = deviceFilterAdapter
+            filterAdapter.onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val selected: ConstraintLayout = parent?.getChildAt(0) as ConstraintLayout
+                    val textView: TextView = selected.getViewById(R.id.filterName) as TextView
+                    textView.setTextColor(Color.WHITE)
+                    val item: FilterDeviceModel =
+                        filterAdapter.adapter.getItem(position) as FilterDeviceModel
+                    viewModel.getAllDeviceMonitors(device.id, item.type)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
 
         }
 
         binding.btnNotificationSetting.setOnClickListener {
             findNavController().navigate(DeviceFragmentDirections.actionDeviceToNotificationSetting())
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback {
-            findNavController().navigate(DeviceFragmentDirections.actionDeviceToHome())
         }
 
         customHeaderBar(binding)
@@ -119,7 +171,9 @@ class DeviceFragment : Fragment() {
 
     private fun customHeaderBar(binding: FragmentDeviceBinding) {
         binding.vhDevice.imvBack.setOnClickListener {
-            findNavController().navigate(DeviceFragmentDirections.actionDeviceToHome())
+            if (findNavController().popBackStack().not()) {
+                requireActivity().finish()
+            }
         }
     }
 
@@ -160,9 +214,11 @@ class DeviceFragment : Fragment() {
         binding.dividerLayoutBottom.visibility = View.VISIBLE
         binding.cvButtonTurnDevice.visibility = View.VISIBLE
         binding.rcDeviceTimer.visibility = View.VISIBLE
-        binding.chartDeviceMonitor.visibility = View.GONE
+//        binding.chartDeviceMonitor.visibility = View.GONE
         binding.txtDeviceValue.visibility = View.GONE
         binding.txtDevicevValue.visibility = View.GONE
+        binding.circleDeviceMonitor.visibility = View.GONE
+        binding.filterDeviceMonitor.visibility = View.GONE
     }
 
     private fun setViewDeviceMonitor(binding: FragmentDeviceBinding) {
@@ -171,7 +227,7 @@ class DeviceFragment : Fragment() {
         binding.dividerLayoutBottom.visibility = View.GONE
         binding.cvButtonTurnDevice.visibility = View.GONE
         binding.rcDeviceTimer.visibility = View.GONE
-        binding.chartDeviceMonitor.visibility = View.VISIBLE
+//        binding.chartDeviceMonitor.visibility = View.GONE
         binding.txtDeviceValue.visibility = View.VISIBLE
         binding.txtDevicevValue.visibility = View.VISIBLE
     }
@@ -193,7 +249,10 @@ class DeviceFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun handleDeviceMonitorFirebase(device: DeviceResponse, binding: FragmentDeviceBinding) {
+    private fun handleDeviceMonitorFirebase(
+        device: DeviceResponse,
+        binding: FragmentDeviceBinding
+    ) {
         val db = Firebase.firestore
         db.collection("develop").document("device_monitor").collection(device.createdBy)
             .document(device.id).addSnapshotListener { snapshot, e ->
@@ -204,7 +263,11 @@ class DeviceFragment : Fragment() {
 
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("Firebase", snapshot.data?.get("value").toString())
-                    binding.txtDevicevValue.text = snapshot.data?.get("value").toString() + " " + snapshot.data?.get("unitMeasure").toString()
+                    binding.circleDeviceMonitor.progress =
+                        snapshot.data?.get("value").toString().toFloat()
+                    viewModel.setCurrentValue(snapshot.data?.get("value").toString() + "°C")
+                    binding.txtDevicevValue.text = snapshot.data?.get("value")
+                        .toString() + " " + snapshot.data?.get("unitMeasure").toString()
                 }
             }
     }
@@ -220,6 +283,13 @@ class DeviceFragment : Fragment() {
             txtModifiedByValue.text = device.lastModifiedBy
             txtModifiedDateValue.text = device.lastModifiedDateConverter
         }
+    }
+
+    private fun readDeviceFilter(): List<FilterDeviceModel> {
+        val fileName = "dropdown_list.json"
+        val bufferReader = requireContext().assets.open(fileName).bufferedReader()
+        val jsonString = bufferReader.use { it.readText() }
+        return Gson().fromJson(jsonString, Array<FilterDeviceModel>::class.java).toList()
     }
 
 }
