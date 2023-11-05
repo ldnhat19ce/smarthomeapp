@@ -78,4 +78,9 @@
     <string name="temperature">Temperature</string>
     <string name="place_holder_updated_date">20 April 2012, 20:08 PM</string>
     <string name="device_images">device images</string>
+
+    <string-array name="filterOptionList">
+        <item></item>
+        <item>MONITOR</item>
+    </string-array>
 </resources>

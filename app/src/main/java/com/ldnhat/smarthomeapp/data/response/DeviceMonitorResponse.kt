@@ -8,6 +8,8 @@ data class DeviceMonitorResponse(
     val createdBy: String,
     val createdDate: String,
     val lastModifiedBy: String,
-    val lastModifiedDate: String
+    val lastModifiedDate: String,
+    val minValue : String,
+    val maxValue : String
 ) {
 }

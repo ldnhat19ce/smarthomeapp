@@ -84,4 +84,8 @@ dependencies {
     implementation 'no.nordicsemi.android:ble-ktx:2.6.1'
     implementation 'no.nordicsemi.android:ble-common:2.6.1'
     implementation 'no.nordicsemi.android:ble-livedata:2.6.1'
+
+    implementation 'com.github.owl-93.Determinate-Progress-View:release:v1.4.4'
+
+    implementation 'com.github.AAChartModel:AAChartCore-Kotlin:-SNAPSHOT'
 }
