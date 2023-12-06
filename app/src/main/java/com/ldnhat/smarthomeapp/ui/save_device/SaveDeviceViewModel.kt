@@ -25,6 +25,11 @@ class SaveDeviceViewModel @Inject constructor(private val deviceRepository: Devi
         _device.postValue(Resource.Loading)
         val deviceDeferred = async { deviceRepository.saveDevice(device) }
         val deviceAwait = deviceDeferred.await()
-        _device.postValue(deviceAwait)
+
+        if(deviceAwait is Resource.Success) {
+            _device.postValue(deviceAwait)
+        } else if(deviceAwait is Resource.Failure) {
+            _device.postValue(Resource.Failure(false, deviceAwait.errorCode, deviceAwait.errorBody))
+        }
     }
 }

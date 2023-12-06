@@ -4,12 +4,12 @@
     <data>
 
         <variable
-            name="deviceTimer"
-            type="com.ldnhat.smarthomeapp.data.response.DeviceTimerResponse" />
+            name="notificationSetting"
+            type="com.ldnhat.smarthomeapp.data.response.NotificationSettingResponse" />
 
         <variable
             name="clickListener"
-            type="com.ldnhat.smarthomeapp.ui.device.DeviceTimerAdapter.OnClickListener" />
+            type="com.ldnhat.smarthomeapp.ui.device.NotificationSettingAdapter.OnClickListener" />
 
         <variable
             name="position"
@@ -21,11 +21,11 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txtTime"
+            android:id="@+id/txtValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="@string/time"
+            android:text="@string/value_notification_setting"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -33,27 +33,12 @@
             />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txtTimeValue"
+            android:id="@+id/notificationSettingValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="@{String.valueOf(deviceTimer.timeStr)}"
-            app:layout_constraintStart_toEndOf="@id/txtTime"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:textColor="#FFFFFF"
-            />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/txtAction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:background="@color/transparent"
-            android:text="@{String.valueOf(deviceTimer.deviceAction)}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnDelete"
-            app:layout_constraintStart_toEndOf="@id/txtTimeValue"
+            android:text="@{notificationSetting.value}"
+            app:layout_constraintStart_toEndOf="@id/txtValue"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:textColor="#FFFFFF"
@@ -71,7 +56,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> clickListener.onclick(deviceTimer, position)}"
+            android:onClick="@{() -> clickListener.onclick(notificationSetting, position)}"
             />
 
         <View

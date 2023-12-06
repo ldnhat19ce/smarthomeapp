@@ -12,6 +12,7 @@
         <variable
             name="isControl"
             type="Boolean" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,6 +44,20 @@
                 android:layout_height="match_parent"
                 android:paddingBottom="10dp">
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDeviceName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:text="Temperature"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:gravity="center"
+                    android:layout_margin="10dp"
+                    android:textSize="20sp"
+                    />
+
                 <com.owl93.dpb.CircularProgressView
                     android:id="@+id/circleDeviceMonitor"
                     android:layout_width="match_parent"
@@ -57,7 +72,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtDeviceName"
                     app:strokeGradientSize="stroke_only"
                     app:strokeGradientStyle="sweep"
                     app:strokeEndStyle="square"
@@ -70,197 +85,6 @@
                     app:trackColor="#FFFFFF"
                     app:trackWidth="30dp" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDevice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/device"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/circleDeviceMonitor" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDeviceName1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:text="[Device1]"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@id/txtDevice"
-                    app:layout_constraintTop_toBottomOf="@id/circleDeviceMonitor" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDeviceName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/name"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtDeviceName1" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDeviceNameValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Device1"
-                    app:layout_constraintStart_toEndOf="@id/txtDeviceName"
-                    app:layout_constraintTop_toBottomOf="@id/txtDevice" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDeviceType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/device_type"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtDeviceName" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDeviceTypeValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:text="CONTROL"
-                    app:layout_constraintStart_toEndOf="@id/txtDeviceType"
-                    app:layout_constraintTop_toBottomOf="@id/txtDeviceNameValue" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDeviceAction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/device_action"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtDeviceType" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDeviceActionValue"
-                    deviceActionBackground="@{viewModel.deviceAction}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@{String.valueOf(viewModel.deviceAction)}"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@id/txtDeviceAction"
-                    app:layout_constraintTop_toBottomOf="@id/txtDeviceTypeValue" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDeviceValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/value"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtDeviceAction" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDevicevValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@id/txtDeviceValue"
-                    app:layout_constraintTop_toBottomOf="@id/txtDeviceActionValue" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtCreatedBy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/created_by"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtDeviceValue" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtCreatedByValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:text="admin"
-                    app:layout_constraintStart_toEndOf="@id/txtCreatedBy"
-                    app:layout_constraintTop_toBottomOf="@id/txtDevicevValue" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtCreatedDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/created_date"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtCreatedBy" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtCreatedDateValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:text="2023"
-                    app:layout_constraintStart_toEndOf="@id/txtCreatedDate"
-                    app:layout_constraintTop_toBottomOf="@id/txtCreatedByValue" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtModifiedBy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/modified_by"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtCreatedDate" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtModifiedByValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:text="admin"
-                    app:layout_constraintStart_toEndOf="@id/txtModifiedBy"
-                    app:layout_constraintTop_toBottomOf="@id/txtCreatedDateValue" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtModifiedDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/modified_date"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtModifiedBy" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtModifiedDateValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:text="2023"
-                    app:layout_constraintStart_toEndOf="@id/txtModifiedDate"
-                    app:layout_constraintTop_toBottomOf="@id/txtModifiedByValue" />
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/csCenter"
                     android:layout_width="match_parent"
@@ -268,7 +92,7 @@
                     android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtModifiedDate">
+                    app:layout_constraintTop_toBottomOf="@id/circleDeviceMonitor">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rcDeviceTimer"
@@ -305,8 +129,22 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/csCenter"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/rcNotificationSetting"
                     />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcNotificationSetting"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:clipToPadding="false"
+                    android:padding="6dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:spanCount="2"
+                    tools:itemCount="16"
+                    tools:listitem="@layout/item_notification_setting" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 

@@ -14,10 +14,12 @@ import com.google.firebase.ktx.Firebase
 import com.google.type.DateTime
 import com.ldnhat.smarthomeapp.R
 import com.ldnhat.smarthomeapp.common.enumeration.DeviceType
+import com.ldnhat.smarthomeapp.common.utils.AppUtils
 import com.ldnhat.smarthomeapp.data.network.Resource
 import com.ldnhat.smarthomeapp.data.response.DeviceResponse
 import com.ldnhat.smarthomeapp.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -67,7 +69,7 @@ class HomeFragment : Fragment() {
 
                         modifiedDate = dateTimeFormatter.format(date)
                         viewModel.setLastModifiedDate(modifiedDate)
-                        viewModel.getDeviceMonitorRange(deviceInit.id)
+                        viewModel.getDeviceMonitorRange(deviceInit)
 
                         val db = Firebase.firestore
                         db.collection("develop").document("device_monitor")
@@ -80,7 +82,7 @@ class HomeFragment : Fragment() {
                                 }
 
                                 if (snapshot != null && snapshot.exists()) {
-                                    viewModel.setCurrentDeviceMonitorValue("${snapshot.data?.get("value").toString()}°C")
+                                    viewModel.setCurrentDeviceMonitorValue("${AppUtils.formatDeviceValue(snapshot.data?.get("value").toString())}${deviceInit.unitMeasure}")
                                 }
                             }
                         viewModel.setDeviceInit(deviceInit)

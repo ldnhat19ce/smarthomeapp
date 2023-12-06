@@ -6,5 +6,6 @@ import com.ldnhat.smarthomeapp.common.enumeration.DeviceType
 data class DeviceRequest(
     val name: String?,
     val deviceType: DeviceType?,
-    val deviceAction: DeviceAction?
+    val deviceAction: DeviceAction?,
+    val unitMeasure : String?
 )

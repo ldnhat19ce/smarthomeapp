@@ -52,18 +52,24 @@ class BLEHomeActivity : AppCompatActivity() {
         get() = findViewById(R.id.buttonConnect)
     private val textViewLifecycleState: TextView
         get() = findViewById(R.id.textViewLifecycleState)
-    private val textViewReadValue: TextView
-        get() = findViewById(R.id.textViewReadValue)
-    private val editTextWriteValue: TextView
-        get() = findViewById<EditText>(R.id.editTextWriteValue)
-    private val textViewIndicateValue: TextView
-        get() = findViewById(R.id.textViewIndicateValue)
-    private val textViewSubscription: TextView
-        get() = findViewById(R.id.textViewSubscription)
+
     private val textViewLog: TextView
         get() = findViewById(R.id.textViewLog)
+
     private val scrollViewLog: ScrollView
         get() = findViewById(R.id.scrollViewLog)
+
+    private val vlTemp: TextView
+        get() = findViewById(R.id.vlTemp)
+
+    private val vlHum: TextView
+        get() = findViewById(R.id.vlHum)
+
+    private val vlLight: TextView
+        get() = findViewById(R.id.vlLight)
+
+    private val btnLight: Button
+        get() = findViewById(R.id.btnLight)
 
     private val imgAnimation1: ImageView
         get() = findViewById(R.id.imgAnimation1)
@@ -81,6 +87,10 @@ class BLEHomeActivity : AppCompatActivity() {
     private var characteristicForRead: BluetoothGattCharacteristic? = null
     private var characteristicForWrite: BluetoothGattCharacteristic? = null
     private var characteristicForIndicate: BluetoothGattCharacteristic? = null
+    private var characteristicForIndicateTemp: BluetoothGattCharacteristic? = null
+    private var characteristicForIndicateHumidity: BluetoothGattCharacteristic? = null
+    private var characteristicForIndicateLight: BluetoothGattCharacteristic? = null
+    private var characteristicForWriteLight: BluetoothGattCharacteristic? = null
 
     private val bluetoothExtension: BluetoothGATTExtension = BluetoothGATTExtension()
 
@@ -100,6 +110,8 @@ class BLEHomeActivity : AppCompatActivity() {
     private var activityResultHandlers = mutableMapOf<Int, (Int) -> Unit>()
     private var permissionResultHandlers =
         mutableMapOf<Int, (Array<out String>, IntArray) -> Unit>()
+
+    private var isAnimation = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,18 +135,6 @@ class BLEHomeActivity : AppCompatActivity() {
             }
         })
 
-//        switchConnect.setOnCheckedChangeListener { _, isChecked ->
-//            when (isChecked) {
-//                true -> {
-//                    val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
-//                    registerReceiver(bleOnOffListener, filter)
-//                }
-//                false -> {
-//                    unregisterReceiver(bleOnOffListener)
-//                }
-//            }
-//            bleRestartLifecycle()
-//        }
         onClickScan()
         AppUtils.appendLog("MainActivity.onCreate", this, textViewLog, scrollViewLog)
     }
@@ -147,7 +147,7 @@ class BLEHomeActivity : AppCompatActivity() {
             runOnUiThread {
                 textViewLifecycleState.text = "State: ${value.name}"
                 if (value != BLELifecycleState.Connected) {
-                    textViewSubscription.text = getString(R.string.text_not_subscribed)
+//                    textViewSubscription.text = getString(R.string.text_not_subscribed)
                 }
             }
         }
@@ -202,9 +202,9 @@ class BLEHomeActivity : AppCompatActivity() {
             )
             return
         }
-        val characteristic = characteristicForWrite ?: run {
+        val characteristic = characteristicForWriteLight ?: run {
             AppUtils.appendLog(
-                "ERROR: write failed, characteristic unavailable ${CommonConstant.CHAR_FOR_WRITE_UUID}",
+                "ERROR: write failed, characteristic unavailable ${CommonConstant.CHAR_FOR_WRITE_LIGHT_UUID}",
                 this,
                 textViewLog,
                 scrollViewLog
@@ -214,7 +214,7 @@ class BLEHomeActivity : AppCompatActivity() {
         with(bluetoothExtension) {
             if (!characteristic.isWriteable()) {
                 AppUtils.appendLog(
-                    "ERROR: write failed, characteristic not writeable ${CommonConstant.CHAR_FOR_WRITE_UUID}",
+                    "ERROR: write failed, characteristic not writeable ${CommonConstant.CHAR_FOR_WRITE_LIGHT_UUID}",
                     this@BLEHomeActivity,
                     textViewLog,
                     scrollViewLog
@@ -223,7 +223,13 @@ class BLEHomeActivity : AppCompatActivity() {
             }
         }
         characteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-        characteristic.value = editTextWriteValue.text.toString().toByteArray(Charsets.UTF_8)
+        if(vlLight.text.equals("ON")) {
+            characteristic.value = "OFF".toByteArray(Charsets.UTF_8)
+        } else {
+            characteristic.value = "ON".toByteArray(Charsets.UTF_8)
+        }
+
+//        characteristic.value = editTextWriteValue.text.toString().toByteArray(Charsets.UTF_8)
         gatt.writeCharacteristic(characteristic)
     }
 
@@ -246,6 +252,9 @@ class BLEHomeActivity : AppCompatActivity() {
         characteristicForRead = null
         characteristicForWrite = null
         characteristicForIndicate = null
+        characteristicForIndicateTemp = null
+        characteristicForIndicateHumidity = null
+        characteristicForIndicateLight = null
     }
 
     @SuppressLint("MissingPermission")
@@ -301,6 +310,7 @@ class BLEHomeActivity : AppCompatActivity() {
 
         AppUtils.appendLog("Stopping BLE scan", this, textViewLog, scrollViewLog)
         isScanning = false
+        isAnimation = false
         bleScanner.stopScan(scanCallback)
     }
 
@@ -470,15 +480,49 @@ class BLEHomeActivity : AppCompatActivity() {
                 service.getCharacteristic(UUID.fromString(CommonConstant.CHAR_FOR_READ_UUID))
             characteristicForWrite =
                 service.getCharacteristic(UUID.fromString(CommonConstant.CHAR_FOR_WRITE_UUID))
-            characteristicForIndicate =
-                service.getCharacteristic(UUID.fromString(CommonConstant.CHAR_FOR_INDICATE_UUID))
 
-            characteristicForIndicate?.let {
+            characteristicForWriteLight =
+                service.getCharacteristic(UUID.fromString(CommonConstant.CHAR_FOR_WRITE_LIGHT_UUID))
+
+            characteristicForIndicateTemp =
+                service.getCharacteristic(UUID.fromString(CommonConstant.CHAR_FOR_INDICATE_TEMP_UUID))
+
+            characteristicForIndicateTemp?.let {
                 lifecycleState = BLELifecycleState.ConnectedSubscribing
                 subscribeToIndications(it, gatt)
             } ?: run {
                 AppUtils.appendLog(
-                    "WARN: characteristic not found ${CommonConstant.CHAR_FOR_INDICATE_UUID}",
+                    "WARN: characteristic not found ${CommonConstant.CHAR_FOR_INDICATE_TEMP_UUID}",
+                    this@BLEHomeActivity,
+                    textViewLog,
+                    scrollViewLog
+                )
+                lifecycleState = BLELifecycleState.Connected
+            }
+
+            characteristicForIndicateHumidity =
+                service.getCharacteristic(UUID.fromString(CommonConstant.CHAR_FOR_INDICATE_HUMIDIY_UUID))
+            characteristicForIndicateHumidity?.let {
+                lifecycleState = BLELifecycleState.ConnectedSubscribing
+                subscribeToIndications(it, gatt)
+            } ?: run {
+                AppUtils.appendLog(
+                    "WARN: characteristic not found ${CommonConstant.CHAR_FOR_INDICATE_HUMIDIY_UUID}",
+                    this@BLEHomeActivity,
+                    textViewLog,
+                    scrollViewLog
+                )
+                lifecycleState = BLELifecycleState.Connected
+            }
+
+            characteristicForIndicateLight =
+                service.getCharacteristic(UUID.fromString(CommonConstant.CHAR_FOR_INDICATE_LIGHT_UUID))
+            characteristicForIndicateLight?.let {
+                lifecycleState = BLELifecycleState.ConnectedSubscribing
+                subscribeToIndications(it, gatt)
+            } ?: run {
+                AppUtils.appendLog(
+                    "WARN: characteristic not found ${CommonConstant.CHAR_FOR_INDICATE_LIGHT_UUID}",
                     this@BLEHomeActivity,
                     textViewLog,
                     scrollViewLog
@@ -502,9 +546,9 @@ class BLEHomeActivity : AppCompatActivity() {
                     else -> "error $status"
                 }
                 AppUtils.appendLog(log, this@BLEHomeActivity, textViewLog, scrollViewLog)
-                runOnUiThread {
-                    textViewReadValue.text = strValue
-                }
+//                runOnUiThread {
+//                    textViewReadValue.text = strValue
+//                }
             } else {
                 AppUtils.appendLog(
                     "onCharacteristicRead unknown uuid $characteristic.uuid",
@@ -520,7 +564,7 @@ class BLEHomeActivity : AppCompatActivity() {
             characteristic: BluetoothGattCharacteristic,
             status: Int
         ) {
-            if (characteristic.uuid == UUID.fromString(CommonConstant.CHAR_FOR_WRITE_UUID)) {
+            if (characteristic.uuid == UUID.fromString(CommonConstant.CHAR_FOR_WRITE_LIGHT_UUID)) {
                 val log: String = "onCharacteristicWrite " + when (status) {
                     BluetoothGatt.GATT_SUCCESS -> "OK"
                     BluetoothGatt.GATT_WRITE_NOT_PERMITTED -> "not allowed"
@@ -538,13 +582,15 @@ class BLEHomeActivity : AppCompatActivity() {
             }
         }
 
+        @SuppressLint("SetTextI18n")
         @Suppress("DEPRECATION")
         @Deprecated("Used natively in Android 12 and lower")
         override fun onCharacteristicChanged(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic
         ) {
-            if (characteristic.uuid == UUID.fromString(CommonConstant.CHAR_FOR_INDICATE_UUID)) {
+            Log.d("notify", characteristic.uuid.toString())
+            if (characteristic.uuid == UUID.fromString(CommonConstant.CHAR_FOR_INDICATE_TEMP_UUID)) {
                 val strValue = characteristic.value.toString(Charsets.UTF_8)
                 AppUtils.appendLog(
                     "onCharacteristicChanged value=\"$strValue\"",
@@ -553,15 +599,41 @@ class BLEHomeActivity : AppCompatActivity() {
                     scrollViewLog
                 )
                 runOnUiThread {
-                    textViewIndicateValue.text = strValue
+                    vlTemp.text = strValue + "°C"
                 }
-            } else {
+            }
+
+            if (characteristic.uuid == UUID.fromString(CommonConstant.CHAR_FOR_INDICATE_HUMIDIY_UUID)) {
+                val strValue = characteristic.value.toString(Charsets.UTF_8)
                 AppUtils.appendLog(
-                    "onCharacteristicChanged unknown uuid $characteristic.uuid",
+                    "onCharacteristicChanged value=\"$strValue\"",
                     this@BLEHomeActivity,
                     textViewLog,
                     scrollViewLog
                 )
+                runOnUiThread {
+                    vlHum.text = strValue + "%"
+                }
+            }
+
+            if (characteristic.uuid == UUID.fromString(CommonConstant.CHAR_FOR_INDICATE_LIGHT_UUID)) {
+                val strValue = characteristic.value.toString(Charsets.UTF_8)
+                AppUtils.appendLog(
+                    "onCharacteristicChanged value=\"$strValue\"",
+                    this@BLEHomeActivity,
+                    textViewLog,
+                    scrollViewLog
+                )
+                runOnUiThread {
+                    vlLight.text = strValue
+                    if(strValue == "ON") {
+                        btnLight.text = "Turn off"
+                        btnLight.setBackgroundColor(resources.getColor(R.color.colorRed))
+                    } else {
+                        btnLight.text = "Turn on"
+                        btnLight.setBackgroundColor(resources.getColor(R.color.colorBlueLight))
+                    }
+                }
             }
         }
 
@@ -584,9 +656,9 @@ class BLEHomeActivity : AppCompatActivity() {
                         textViewLog,
                         scrollViewLog
                     )
-                    runOnUiThread {
-                        textViewSubscription.text = subscriptionText
-                    }
+//                    runOnUiThread {
+//                        textViewSubscription.text = subscriptionText
+//                    }
                 } else {
                     AppUtils.appendLog(
                         "ERROR: onDescriptorWrite status=$status uuid=${descriptor.uuid} char=${descriptor.characteristic.uuid}",
@@ -803,21 +875,24 @@ class BLEHomeActivity : AppCompatActivity() {
 
     private val animationScan = object : Runnable {
         override fun run() {
-            imgAnimation1.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(1000)
-                .withEndAction {
-                    imgAnimation1.scaleX = 1f
-                    imgAnimation1.scaleY = 1f
-                    imgAnimation1.alpha = 1f
-                }
+            if(isAnimation) {
+                imgAnimation1.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(1000)
+                    .withEndAction {
+                        imgAnimation1.scaleX = 1f
+                        imgAnimation1.scaleY = 1f
+                        imgAnimation1.alpha = 1f
+                    }
 
-            imgAnimation2.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(700)
-                .withEndAction {
-                    imgAnimation2.scaleX = 1f
-                    imgAnimation2.scaleY = 1f
-                    imgAnimation2.alpha = 1f
-                }
+                imgAnimation2.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(700)
+                    .withEndAction {
+                        imgAnimation2.scaleX = 1f
+                        imgAnimation2.scaleY = 1f
+                        imgAnimation2.alpha = 1f
+                    }
 
-            handlerAnimation.postDelayed(this, 1500)
+                handlerAnimation.postDelayed(this, 1500)
+            }
+
         }
     }
     private fun onClickScan() {
@@ -831,6 +906,7 @@ class BLEHomeActivity : AppCompatActivity() {
     }
 
     private fun stopScan() {
+        isAnimation = true
         animationScan.run()
         AppUtils.changeText(switchConnect, getString(R.string.stop))
         val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)

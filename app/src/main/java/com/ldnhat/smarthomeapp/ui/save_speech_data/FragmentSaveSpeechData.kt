@@ -1,11 +1,15 @@
 package com.ldnhat.smarthomeapp.ui.save_speech_data
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
@@ -13,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.ldnhat.smarthomeapp.R
 import com.ldnhat.smarthomeapp.base.ErrorApi
 import com.ldnhat.smarthomeapp.common.enumeration.DeviceAction
@@ -31,6 +36,7 @@ class FragmentSaveSpeechData : Fragment() {
     private val deviceList = mutableListOf<DeviceResponse>()
     private lateinit var deviceDTO: DeviceSaveSpeechDataDTO
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,6 +50,7 @@ class FragmentSaveSpeechData : Fragment() {
                     val deviceNameList =
                         it.value.stream().map { deviceResponse -> deviceResponse.name }.toList()
                     addSpinner(binding, deviceNameList)
+                    listenerDropdown(binding)
                     deviceList.addAll(it.value)
                 }
                 else -> {}
@@ -51,7 +58,7 @@ class FragmentSaveSpeechData : Fragment() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback {
-            findNavController().navigate(FragmentSaveSpeechDataDirections.actionSaveToSpeechData())
+            findNavController().popBackStack()
         }
 
         binding.btnSaveSpeechData.enable(false)
@@ -81,19 +88,19 @@ class FragmentSaveSpeechData : Fragment() {
 
                     }
                     is Resource.Success -> {
-                        findNavController().navigate(FragmentSaveSpeechDataDirections.actionSaveToSpeechData())
+                        findNavController().popBackStack()
                     }
                     is Resource.Failure -> {
                         binding.txtError.visibility = View.VISIBLE
-                        val error: ErrorApi =
-                            Gson().fromJson(it.errorBody?.string().toString(), ErrorApi::class.java)
-                        binding.txtError.text = error.title
-                        Log.d("error_api", it.toString())
-
+                        if(it.errorBody != null) {
+                            binding.txtError.text = it.errorBody.title
+                        }
                     }
                 }
             }
         }
+
+        customHeaderBar(binding)
 
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -103,15 +110,67 @@ class FragmentSaveSpeechData : Fragment() {
         val deviceActionAdapter = ArrayAdapter(
             requireContext(),
             com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
-            resources.getStringArray(R.array.deviceActionList)
+            resources.getStringArray(R.array.deviceActionList).filter { v -> !v.equals("NOTHING") }
         )
+
+        val deviceActionPosition: Int =
+            deviceActionAdapter.getPosition(resources.getStringArray(R.array.deviceActionList).filter { v -> !v.equals("NOTHING") }[0])
 
         val deviceAdapter = ArrayAdapter(
             requireContext(),
             com.google.android.material.R.layout.support_simple_spinner_dropdown_item, device
         )
 
+        val devicePosition: Int = deviceAdapter.getPosition(device[0])
+
         binding.spDevice.adapter = deviceAdapter
+        binding.spDevice.setSelection(devicePosition)
+
         binding.spDeviceAction.adapter = deviceActionAdapter
+        binding.spDeviceAction.setSelection(deviceActionPosition)
+    }
+
+    private fun listenerDropdown(binding: FragmentSaveSpeechDataBinding) {
+        binding.spDeviceAction.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selected: TextView = parent?.getChildAt(0) as TextView
+                selected.setTextColor(Color.WHITE)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+
+        binding.spDevice.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selected: TextView = parent?.getChildAt(0) as TextView
+                selected.setTextColor(Color.WHITE)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+    }
+
+    private fun customHeaderBar(binding: FragmentSaveSpeechDataBinding) {
+        binding.vhSaveSpeechData.imvBack.setOnClickListener {
+            if (findNavController().popBackStack().not()) {
+                requireActivity().finish()
+            }
+        }
     }
 }

@@ -4,5 +4,5 @@ data class NotificationSettingRequest(
     val title: String,
     val message: String,
     val value: String,
-    val deviceDTO: DeviceDTO
+    val deviceDTO: DeviceDTO?
 ) {}

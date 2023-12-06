@@ -1,8 +1,11 @@
 package com.ldnhat.smarthomeapp.data.network
 
+import com.google.gson.Gson
+import com.ldnhat.smarthomeapp.data.response.ErrorResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+
 
 interface SafeApiCall {
     suspend fun <T> safeApiCall(
@@ -14,7 +17,9 @@ interface SafeApiCall {
             } catch (throwable: Throwable) {
                 when (throwable) {
                     is HttpException -> {
-                        Resource.Failure(false, throwable.code(), throwable.response()?.errorBody())
+                        val gson = Gson()
+                        val message: ErrorResponse = gson.fromJson(throwable.response()?.errorBody()?.charStream(), ErrorResponse::class.java)
+                        Resource.Failure(false, throwable.code(), message)
                     }
                     else -> {
                         Resource.Failure(true, null, null)
