@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.aachartmodel.aainfographics.aachartcreator.*
+import com.github.aachartmodel.aainfographics.aaoptionsmodel.AAScrollablePlotArea
 import com.github.aachartmodel.aainfographics.aaoptionsmodel.AAStyle
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -24,17 +25,21 @@ import com.google.gson.Gson
 import com.ldnhat.smarthomeapp.R
 import com.ldnhat.smarthomeapp.common.enumeration.DeviceType
 import com.ldnhat.smarthomeapp.common.extensions.FilterDeviceModel
+import com.ldnhat.smarthomeapp.common.utils.AppUtils
 import com.ldnhat.smarthomeapp.data.network.Resource
 import com.ldnhat.smarthomeapp.data.response.DeviceMonitorResponse
 import com.ldnhat.smarthomeapp.data.response.DeviceResponse
 import com.ldnhat.smarthomeapp.databinding.FragmentDeviceBinding
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.internal.immutableListOf
+import java.util.Arrays
 
 @AndroidEntryPoint
 class DeviceFragment : Fragment() {
     private val viewModel by viewModels<DeviceViewModel>()
 
     private lateinit var deviceTimerAdapter: DeviceTimerAdapter
+    private lateinit var notificationSettingAdapter: NotificationSettingAdapter
 
     private var lineDeviceMonitor = listOf<Pair<String, Float>>()
 
@@ -67,6 +72,11 @@ class DeviceFragment : Fragment() {
         }
 
         if (device.deviceType == DeviceType.CONTROL) {
+            binding.btnNotificationSetting.setImageResource(R.drawable.ic_stat_av_timer)
+            binding.btnNotificationSetting.setOnClickListener {
+                findNavController().navigate(DeviceFragmentDirections.actionDeviceToDeviceTimer(device))
+            }
+
             setViewDeviceControl(binding)
 
             // get device action on firebase
@@ -83,19 +93,29 @@ class DeviceFragment : Fragment() {
             }
 
         } else {
+            binding.btnNotificationSetting.setImageResource(R.drawable.ic_stat_notifications_active)
+            binding.btnNotificationSetting.setOnClickListener {
+                findNavController().navigate(DeviceFragmentDirections.actionDeviceToNotificationSetting(device))
+            }
+
+            handleNotificationSetting(device, binding)
+
             val aaChartModel: AAChartModel = AAChartModel()
                 .chartType(AAChartType.Area)
                 .title("${device.name} Line Chart")
                 .axesTextColor("#FFFFFF")
                 .yAxisGridLineWidth(0)
-                .dataLabelsEnabled(true)
+                .dataLabelsEnabled(false)
                 .titleStyle(AAStyle().color("#FFFFFF"))
                 .animationType(AAChartAnimationType.BouncePast)
                 .zoomType(AAChartZoomType.XY)
                 .backgroundColor(Color.TRANSPARENT)
                 .gradientColorEnable(true)
                 .yAxisMax(60)
-                .series(arrayOf(AASeriesElement().name(device.name).data(arrayOf(0))))
+                .categories(arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+                .series(arrayOf(AASeriesElement().name(device.name).data(arrayOf())))
+//                .scrollablePlotArea(AAScrollablePlotArea().scrollPositionX(1f).minWidth(20000)
+//                    .opacity(1f).minHeight(1000))
 
             binding.aaChartView.aa_drawChartWithChartModel(aaChartModel)
 
@@ -106,16 +126,12 @@ class DeviceFragment : Fragment() {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
                         val list: List<DeviceMonitorResponse> = response.value
-//                        lineDeviceMonitor = if(list.isEmpty()) {
-//                            listOf(Pair("0", 0F))
-//                        } else {
-//                            list.map { deviceMonitor -> Pair(deviceMonitor.value, deviceMonitor.value.toFloat()) }.toList()
-//                        }
 
                         binding.aaChartView
                             .aa_onlyRefreshTheChartDataWithChartOptionsSeriesArray(
                                 arrayOf(
                                     AASeriesElement()
+                                        .step(true)
                                         .data(list.map { deviceMonitor -> deviceMonitor.value.toFloat() }
                                             .toTypedArray())
                                 )
@@ -138,12 +154,14 @@ class DeviceFragment : Fragment() {
                     position: Int,
                     id: Long
                 ) {
-                    val selected: ConstraintLayout = parent?.getChildAt(0) as ConstraintLayout
-                    val textView: TextView = selected.getViewById(R.id.filterName) as TextView
-                    textView.setTextColor(Color.WHITE)
-                    val item: FilterDeviceModel =
-                        filterAdapter.adapter.getItem(position) as FilterDeviceModel
-                    viewModel.getAllDeviceMonitors(device.id, item.type)
+                    if(parent != null && parent.childCount != 0) {
+                        val selected: ConstraintLayout = parent.getChildAt(0) as ConstraintLayout
+                        val textView: TextView = selected.getViewById(R.id.filterName) as TextView
+                        textView.setTextColor(Color.WHITE)
+                        val item: FilterDeviceModel =
+                            filterAdapter.adapter.getItem(position) as FilterDeviceModel
+                        viewModel.getAllDeviceMonitors(device.id, item.type)
+                    }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -152,10 +170,6 @@ class DeviceFragment : Fragment() {
 
             }
 
-        }
-
-        binding.btnNotificationSetting.setOnClickListener {
-            findNavController().navigate(DeviceFragmentDirections.actionDeviceToNotificationSetting())
         }
 
         customHeaderBar(binding)
@@ -209,27 +223,21 @@ class DeviceFragment : Fragment() {
     }
 
     private fun setViewDeviceControl(binding: FragmentDeviceBinding) {
-        binding.txtDeviceAction.visibility = View.VISIBLE
-        binding.txtDeviceActionValue.visibility = View.VISIBLE
         binding.dividerLayoutBottom.visibility = View.VISIBLE
         binding.cvButtonTurnDevice.visibility = View.VISIBLE
         binding.rcDeviceTimer.visibility = View.VISIBLE
-//        binding.chartDeviceMonitor.visibility = View.GONE
-        binding.txtDeviceValue.visibility = View.GONE
-        binding.txtDevicevValue.visibility = View.GONE
+        binding.rcNotificationSetting.visibility = View.GONE
         binding.circleDeviceMonitor.visibility = View.GONE
         binding.filterDeviceMonitor.visibility = View.GONE
+        binding.aaChartView.visibility = View.GONE
     }
 
     private fun setViewDeviceMonitor(binding: FragmentDeviceBinding) {
-        binding.txtDeviceAction.visibility = View.GONE
-        binding.txtDeviceActionValue.visibility = View.GONE
         binding.dividerLayoutBottom.visibility = View.GONE
         binding.cvButtonTurnDevice.visibility = View.GONE
         binding.rcDeviceTimer.visibility = View.GONE
-//        binding.chartDeviceMonitor.visibility = View.GONE
-        binding.txtDeviceValue.visibility = View.VISIBLE
-        binding.txtDevicevValue.visibility = View.VISIBLE
+        binding.rcNotificationSetting.visibility = View.VISIBLE
+        binding.aaChartView.visibility = View.VISIBLE
     }
 
     private fun handleDeviceFirebase(device: DeviceResponse) {
@@ -265,9 +273,9 @@ class DeviceFragment : Fragment() {
                     Log.d("Firebase", snapshot.data?.get("value").toString())
                     binding.circleDeviceMonitor.progress =
                         snapshot.data?.get("value").toString().toFloat()
-                    viewModel.setCurrentValue(snapshot.data?.get("value").toString() + "°C")
-                    binding.txtDevicevValue.text = snapshot.data?.get("value")
-                        .toString() + " " + snapshot.data?.get("unitMeasure").toString()
+                    viewModel.setCurrentValue(AppUtils.formatDeviceValue(snapshot.data?.get("value").toString()) + device.unitMeasure)
+//                    binding.txtDevicevValue.text = snapshot.data?.get("value")
+//                        .toString() + " " + snapshot.data?.get("unitMeasure").toString()
                 }
             }
     }
@@ -275,13 +283,14 @@ class DeviceFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun updateUI(device: DeviceResponse, binding: FragmentDeviceBinding) {
         with(binding) {
-            txtDeviceName1.text = "[" + device.name + "]"
-            txtDeviceNameValue.text = device.name
-            txtDeviceTypeValue.text = device.deviceType.toString()
-            txtCreatedByValue.text = device.createdBy
-            txtCreatedDateValue.text = device.createDateConverter
-            txtModifiedByValue.text = device.lastModifiedBy
-            txtModifiedDateValue.text = device.lastModifiedDateConverter
+            txtDeviceName.text = device.name
+//            txtDeviceName1.text = "[" + device.name + "]"
+//            txtDeviceNameValue.text = device.name
+//            txtDeviceTypeValue.text = device.deviceType.toString()
+//            txtCreatedByValue.text = device.createdBy
+//            txtCreatedDateValue.text = device.createDateConverter
+//            txtModifiedByValue.text = device.lastModifiedBy
+//            txtModifiedDateValue.text = device.lastModifiedDateConverter
         }
     }
 
@@ -290,6 +299,37 @@ class DeviceFragment : Fragment() {
         val bufferReader = requireContext().assets.open(fileName).bufferedReader()
         val jsonString = bufferReader.use { it.readText() }
         return Gson().fromJson(jsonString, Array<FilterDeviceModel>::class.java).toList()
+    }
+
+    private fun handleNotificationSetting(
+        device: DeviceResponse,
+        binding: FragmentDeviceBinding
+    ) {
+        viewModel.getAllNotificationSetting(device)
+        notificationSettingAdapter =
+            NotificationSettingAdapter(NotificationSettingAdapter.OnClickListener { notificationSetting, position ->
+                run {
+                    viewModel.deleteNotificationSetting(notificationSetting.id)
+                    when (val data = viewModel.notificationSettings.value) {
+                        is Resource.Success -> {
+                            viewModel.updateNotificationSettings(data.value.filter { s -> s.id != notificationSetting.id })
+                        }
+                        else -> {}
+                    }
+
+                    binding.rcNotificationSetting.adapter?.notifyItemRemoved(position)
+                }
+            })
+        viewModel.notificationSettings.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    notificationSettingAdapter.submitList(it.value)
+                }
+                else -> {}
+            }
+        }
+
+        binding.rcNotificationSetting.adapter = notificationSettingAdapter
     }
 
 }

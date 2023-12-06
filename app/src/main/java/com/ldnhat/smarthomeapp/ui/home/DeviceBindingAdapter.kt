@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.ldnhat.smarthomeapp.common.utils.AppUtils
 import com.ldnhat.smarthomeapp.data.network.Resource
 import com.ldnhat.smarthomeapp.data.response.DeviceMonitorResponse
 import com.ldnhat.smarthomeapp.data.response.DeviceResponse
@@ -24,7 +25,7 @@ fun bindDeviceRecyclerView(recyclerView: RecyclerView, data: Resource<List<Devic
 fun bindMinData(textView: TextView, data: Resource<DeviceMonitorResponse>?) {
     when (data) {
         is Resource.Success -> {
-            textView.text = "Min value: " + data.value.minValue + "°C"
+            textView.text = "Min value: " + AppUtils.formatDeviceValue(data.value.minValue) + data.value.unitMeasure
         }
         else -> {}
     }
@@ -35,7 +36,7 @@ fun bindMinData(textView: TextView, data: Resource<DeviceMonitorResponse>?) {
 fun bindMaxData(textView: TextView, data: Resource<DeviceMonitorResponse>?) {
     when (data) {
         is Resource.Success -> {
-            textView.text = "Max value: " + data.value.maxValue + "°C"
+            textView.text = "Max value: " + AppUtils.formatDeviceValue(data.value.maxValue) + data.value.unitMeasure
         }
         else -> {}
     }

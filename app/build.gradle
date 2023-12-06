@@ -87,5 +87,5 @@ dependencies {
 
     implementation 'com.github.owl-93.Determinate-Progress-View:release:v1.4.4'
 
-    implementation 'com.github.AAChartModel:AAChartCore-Kotlin:-SNAPSHOT'
+    implementation 'com.github.AAChartModel:AAChartCore-Kotlin:7.2.1'
 }

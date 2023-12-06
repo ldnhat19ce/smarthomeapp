@@ -9,6 +9,7 @@ import com.ldnhat.smarthomeapp.R
 import com.ldnhat.smarthomeapp.common.enumeration.DeviceAction
 import com.ldnhat.smarthomeapp.data.network.Resource
 import com.ldnhat.smarthomeapp.data.response.DeviceTimerResponse
+import com.ldnhat.smarthomeapp.data.response.NotificationSettingResponse
 
 @BindingAdapter("deviceActionBackground")
 fun bindStatus(backgroundState: AppCompatTextView, action: DeviceAction?) {
@@ -46,6 +47,20 @@ fun bindDeviceTimerRecyclerView(
     data: Resource<List<DeviceTimerResponse>>?
 ) {
     val adapter = recyclerView.adapter as DeviceTimerAdapter
+    when (data) {
+        is Resource.Success -> {
+            adapter.submitList(data.value)
+        }
+        else -> {}
+    }
+}
+
+@BindingAdapter("notificationSettingListData")
+fun bindNotificationSettingRecyclerView(
+    recyclerView: RecyclerView,
+    data: Resource<List<NotificationSettingResponse>>?
+) {
+    val adapter = recyclerView.adapter as NotificationSettingAdapter
     when (data) {
         is Resource.Success -> {
             adapter.submitList(data.value)

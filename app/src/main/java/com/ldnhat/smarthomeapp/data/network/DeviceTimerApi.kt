@@ -1,9 +1,8 @@
 package com.ldnhat.smarthomeapp.data.network
 
+import com.ldnhat.smarthomeapp.data.request.DeviceTimerRequest
 import com.ldnhat.smarthomeapp.data.response.DeviceTimerResponse
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface DeviceTimerApi : BaseApi {
 
@@ -11,5 +10,8 @@ interface DeviceTimerApi : BaseApi {
     suspend fun getAllDeviceTimers(@Path("id") id: String): List<DeviceTimerResponse>
 
     @DELETE("device-timer/{id}")
-    suspend fun deleteDeviceTimer(@Path("id") id: String) : Void
+    suspend fun deleteDeviceTimer(@Path("id") id: String): Void
+
+    @POST("device-timer")
+    suspend fun saveDeviceTimer(@Body deviceTimerRequest: DeviceTimerRequest): DeviceTimerResponse
 }

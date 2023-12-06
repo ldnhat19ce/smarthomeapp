@@ -37,6 +37,8 @@
             app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
+            app:popUpToSaveState="true"
+            app:restoreState="true"
             />
 
         <action
@@ -46,6 +48,8 @@
             app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
+            app:popUpToSaveState="true"
+            app:restoreState="true"
             />
     </fragment>
 
@@ -61,21 +65,14 @@
             />
 
         <action
-            android:id="@+id/action_device_to_home"
-            app:destination="@+id/homeFragment"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            />
-
-        <action
             android:id="@+id/action_device_to_profile"
             app:destination="@+id/profileFragment"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
+            app:popUpToSaveState="true"
+            app:restoreState="true"
             />
 
         <action
@@ -85,6 +82,19 @@
             app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
+            app:popUpToSaveState="true"
+            app:restoreState="true"
+            />
+
+        <action
+            android:id="@+id/action_device_to_device_timer"
+            app:destination="@+id/saveDeviceTimerFragment"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popUpToSaveState="true"
+            app:restoreState="true"
             />
 
     </fragment>
@@ -135,14 +145,9 @@
         android:name="com.ldnhat.smarthomeapp.ui.notification_setting.NotificationSettingFragment"
         android:label="fragment_notification_setting"
         tools:layout="@layout/fragment_notification_setting" >
-
-        <action
-            android:id="@+id/action_notification_setting_to_device"
-            app:destination="@+id/deviceFragment"
-            app:popEnterAnim="@anim/slide_out_right"
-            app:popExitAnim="@anim/slide_out_right"
-            app:enterAnim="@anim/slide_out_left"
-            app:exitAnim="@anim/slide_out_left"
+        <argument
+            android:name="selectedDevice"
+            app:argType="com.ldnhat.smarthomeapp.data.response.DeviceResponse"
             />
     </fragment>
 
@@ -153,21 +158,14 @@
         tools:layout="@layout/fragment_speech_data" >
 
         <action
-            android:id="@+id/action_speech_data_to_home"
-            app:destination="@+id/homeFragment"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            />
-
-        <action
             android:id="@+id/action_speech_data_to_save"
             app:destination="@+id/saveSpeechDataFragment"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
+            app:popUpToSaveState="true"
+            app:restoreState="true"
             />
     </fragment>
 
@@ -176,14 +174,17 @@
         android:name="com.ldnhat.smarthomeapp.ui.save_speech_data.FragmentSaveSpeechData"
         android:label="fragment_save_speech_data"
         tools:layout="@layout/fragment_save_speech_data" >
+    </fragment>
 
-        <action
-            android:id="@+id/action_save_to_speech_data"
-            app:destination="@+id/speechDataFragment"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
+    <fragment
+        android:id="@+id/saveDeviceTimerFragment"
+        android:name="com.ldnhat.smarthomeapp.ui.save_device_timer.SaveDeviceTimerFragment"
+        android:label="fragment_device_timer"
+        tools:layout="@layout/fragment_device_timer" >
+
+        <argument
+            android:name="selectedDevice"
+            app:argType="com.ldnhat.smarthomeapp.data.response.DeviceResponse"
             />
     </fragment>
 </navigation>

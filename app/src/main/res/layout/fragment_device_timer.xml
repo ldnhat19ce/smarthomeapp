@@ -9,34 +9,33 @@
         android:background="@drawable/bg_gradient">
 
         <include
-            android:id="@+id/vhNotificationSetting"
+            android:id="@+id/vhDeviceTimer"
             layout="@layout/view_header_bar" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtError"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/vhNotificationSetting"
+            app:layout_constraintTop_toBottomOf="@id/vhDeviceTimer"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginStart="32dp"
             android:textColor="@color/colorRed"
             android:visibility="gone"
             />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txtValue"
+            android:id="@+id/txtTime"
             style="@style/TextLabel1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/value"
+            android:text="@string/device_timer_time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtError" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/edValue"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/edTime"
             style="@style/TextInput1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,65 +44,36 @@
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
             android:ems="10"
-            android:hint="@string/enter_value"
+            android:hint="@string/choose_date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtValue" />
+            app:layout_constraintTop_toBottomOf="@+id/txtTime" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txtTitle"
+            android:id="@+id/txtDeviceAction"
             style="@style/TextLabel1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/title"
+            android:layout_marginTop="30dp"
+            android:text="@string/device_action"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edValue" />
+            app:layout_constraintTop_toBottomOf="@+id/edTime" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/edTitle"
-            style="@style/TextInput1"
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/spDeviceAction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:ems="10"
-            android:hint="@string/enter_title"
+            android:prompt="@string/device_action"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txtMessage"
-            style="@style/TextLabel1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/value"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edTitle" />
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/edMessage"
-            style="@style/TextInput1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:ems="10"
-            android:hint="@string/enter_message"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtMessage" />
+            app:layout_constraintTop_toBottomOf="@id/txtDeviceAction" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnCreateNotificationSetting"
+            android:id="@+id/btnCreateDeviceTimer"
             style="@style/ButtonPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -115,6 +85,6 @@
             android:text="@string/save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edMessage" />
+            app:layout_constraintTop_toBottomOf="@+id/spDeviceAction" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

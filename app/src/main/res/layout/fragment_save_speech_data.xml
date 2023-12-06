@@ -4,7 +4,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_gradient">
 
         <include
             android:id="@+id/vhSaveSpeechData"
@@ -23,17 +24,18 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtMessageRequest"
-            style="@style/TextLabelDefault"
+            style="@style/TextLabel1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
+            android:layout_marginTop="20dp"
             android:text="@string/message_request"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtError" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edMessageRequest"
-            style="@style/TextInputDefault"
+            style="@style/TextInput1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -49,9 +51,10 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtMessageResponse"
-            style="@style/TextLabelDefault"
+            style="@style/TextLabel1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="32dp"
             android:text="@string/message_response"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +62,7 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edMessageResponse"
-            style="@style/TextInputDefault"
+            style="@style/TextInput1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -76,9 +79,10 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtDevice"
-            style="@style/TextLabelDefault"
+            style="@style/TextLabel1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="32dp"
             android:text="@string/device"
             app:layout_constraintStart_toStartOf="parent"
@@ -98,10 +102,11 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtDeviceAction"
-            style="@style/TextLabelDefault"
+            style="@style/TextLabel1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
+            android:layout_marginTop="20dp"
             android:text="@string/device_action"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spDevice" />
@@ -125,7 +130,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
             android:text="@string/save"

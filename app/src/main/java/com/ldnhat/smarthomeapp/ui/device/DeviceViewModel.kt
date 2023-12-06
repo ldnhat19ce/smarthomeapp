@@ -9,9 +9,11 @@ import com.ldnhat.smarthomeapp.data.network.Resource
 import com.ldnhat.smarthomeapp.data.repository.DeviceMonitorRepository
 import com.ldnhat.smarthomeapp.data.repository.DeviceRepository
 import com.ldnhat.smarthomeapp.data.repository.DeviceTimerRepository
+import com.ldnhat.smarthomeapp.data.repository.NotificationSettingRepository
 import com.ldnhat.smarthomeapp.data.response.DeviceMonitorResponse
 import com.ldnhat.smarthomeapp.data.response.DeviceResponse
 import com.ldnhat.smarthomeapp.data.response.DeviceTimerResponse
+import com.ldnhat.smarthomeapp.data.response.NotificationSettingResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
@@ -22,7 +24,8 @@ import javax.inject.Inject
 class DeviceViewModel @Inject constructor(
     private val deviceRepository: DeviceRepository,
     private val deviceTimerRepository: DeviceTimerRepository,
-    private val deviceMonitorRepository: DeviceMonitorRepository
+    private val deviceMonitorRepository: DeviceMonitorRepository,
+    private val notificationSettingRepository : NotificationSettingRepository
 ) : ViewModel() {
 
     private val _device: MutableLiveData<Resource<DeviceResponse>> = MutableLiveData()
@@ -55,6 +58,10 @@ class DeviceViewModel @Inject constructor(
     private val _currentValue : MutableLiveData<String> = MutableLiveData()
     val currentValue : LiveData<String>
         get() = _currentValue
+
+    private val _notificationSettings: MutableLiveData<Resource<List<NotificationSettingResponse>>> = MutableLiveData()
+    val notificationSettings : LiveData<Resource<List<NotificationSettingResponse>>>
+        get() = _notificationSettings
 
     fun getDeviceById(deviceId: String) = viewModelScope.launch {
         _device.postValue(Resource.Loading)
@@ -140,6 +147,28 @@ class DeviceViewModel @Inject constructor(
 
     fun setCurrentValue(value : String) {
         _currentValue.postValue(value)
+    }
+
+    fun getAllNotificationSetting(device : DeviceResponse) = viewModelScope.launch {
+        _notificationSettings.postValue(Resource.Loading)
+        val notificationSettingsDeferred = async { notificationSettingRepository.getAllNotificationSetting(device.id) }
+        val notificationSettingsAwait = notificationSettingsDeferred.await()
+
+        val notificationSettingsListItem = mutableListOf<NotificationSettingResponse>()
+        if(notificationSettingsAwait is Resource.Success) {
+            notificationSettingsListItem.addAll(notificationSettingsAwait.value)
+            _notificationSettings.postValue(Resource.Success(notificationSettingsListItem))
+        } else {
+            Resource.Failure(false, null, null)
+        }
+    }
+
+    fun deleteNotificationSetting(id: String) = viewModelScope.launch {
+        notificationSettingRepository.deleteNotificationSetting(id)
+    }
+
+    fun updateNotificationSettings(notificationSettings: List<NotificationSettingResponse>) {
+        _notificationSettings.postValue(Resource.Success(notificationSettings))
     }
 
     override fun onCleared() {

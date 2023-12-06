@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@string/message_request"
+            android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:text="@{speechData.messageRequest}"
+            android:textColor="#FFFFFF"
             app:layout_constraintStart_toEndOf="@id/txtMessageRequest"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@string/message_response"
+            android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txtMessageRequest" />
 
@@ -53,6 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:text="@{speechData.messageResponse}"
+            android:textColor="#FFFFFF"
             app:layout_constraintStart_toEndOf="@id/txtMessageResponse"
             app:layout_constraintTop_toBottomOf="@id/txtMessageRequestValue" />
 
@@ -62,6 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@string/device_name"
+            android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txtMessageResponse" />
 
@@ -71,6 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:text="@{speechData.deviceDTO.name}"
+            android:textColor="#FFFFFF"
             app:layout_constraintStart_toEndOf="@id/txtDeviceName"
             app:layout_constraintTop_toBottomOf="@id/txtMessageResponseValue" />
 
@@ -80,6 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@string/action"
+            android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txtDeviceName" />
 
@@ -88,6 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:textColor="#FFFFFF"
             android:text="@{String.valueOf(speechData.deviceDTO.deviceAction)}"
             app:layout_constraintStart_toEndOf="@id/txtAction"
             app:layout_constraintTop_toBottomOf="@id/txtDeviceNameValue" />
@@ -101,6 +109,7 @@
             android:layout_marginBottom="13dp"
             android:background="@color/colorRed"
             android:text="@string/delete"
+            android:textColor="#FFFFFF"
             android:onClick="@{() -> clickListener.onclick(speechData, position)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

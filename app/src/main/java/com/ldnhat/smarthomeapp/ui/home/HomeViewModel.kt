@@ -66,12 +66,13 @@ class HomeViewModel @Inject
         }
     }
 
-    fun getDeviceMonitorRange(id : String) = viewModelScope.launch {
+    fun getDeviceMonitorRange(device : DeviceResponse) = viewModelScope.launch {
         _deviceMonitorRange.postValue(Resource.Loading)
-        val deviceMonitorRangeDeferred = async { deviceMonitorRepository.getRangeDeviceMonitor(id) }
-        val deviceMonitorRangeAwait = deviceMonitorRangeDeferred.await()
+        val deviceMonitorRangeDeferred = async { deviceMonitorRepository.getRangeDeviceMonitor(device.id) }
+        var deviceMonitorRangeAwait = deviceMonitorRangeDeferred.await()
 
         if (deviceMonitorRangeAwait is Resource.Success) {
+            deviceMonitorRangeAwait.value.unitMeasure = device.unitMeasure
             _deviceMonitorRange.postValue(deviceMonitorRangeAwait)
         } else {
             Resource.Failure(false, null, null)

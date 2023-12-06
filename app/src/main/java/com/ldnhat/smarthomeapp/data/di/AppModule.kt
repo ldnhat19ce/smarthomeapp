@@ -74,4 +74,13 @@ object AppModule {
     ): DeviceTokenApi {
         return remoteDataSource.buildApi(DeviceTokenApi::class.java, context)
     }
+
+    @Singleton
+    @Provides
+    fun provideNotificationSettingApi(
+        remoteDataSource: RemoteDataSource,
+        @ApplicationContext context: Context
+    ): NotificationSettingApi {
+        return remoteDataSource.buildApi(NotificationSettingApi::class.java, context)
+    }
 }

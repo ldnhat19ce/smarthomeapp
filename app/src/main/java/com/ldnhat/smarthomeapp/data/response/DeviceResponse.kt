@@ -16,11 +16,12 @@ data class DeviceResponse(
     var createdBy: String = "",
     var createdDate: String = "",
     var lastModifiedBy: String = "",
-    var lastModifiedDate: String = ""
+    var lastModifiedDate: String = "",
+    var unitMeasure : String = ""
 ) : Parcelable {
     val createDateConverter: String
-        get() = AppUtils.convertStringToInstant(createdDate)
+        get() = AppUtils.convertStringToLocalDateTime(createdDate)
 
     val lastModifiedDateConverter: String
-        get() = AppUtils.convertStringToInstant(lastModifiedDate)
+        get() = AppUtils.convertStringToLocalDateTime(lastModifiedDate)
 }

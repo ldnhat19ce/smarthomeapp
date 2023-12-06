@@ -1,5 +1,6 @@
 package com.ldnhat.smarthomeapp.ui.save_speech_data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,8 @@ import com.ldnhat.smarthomeapp.data.response.SpeechDataResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,8 +46,8 @@ class SaveSpeechDataViewModel @Inject constructor(
         if (deviceAwait is Resource.Success) {
             deviceListItem.addAll(deviceAwait.value)
             _devices.postValue(Resource.Success(deviceListItem))
-        } else {
-            Resource.Failure(false, null, null)
+        } else if(deviceAwait is Resource.Failure) {
+            _devices.postValue(Resource.Failure(false, deviceAwait.errorCode, deviceAwait.errorBody))
         }
     }
 

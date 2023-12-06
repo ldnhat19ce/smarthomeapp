@@ -57,10 +57,20 @@ class SpeechDataFragment : Fragment() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback {
-            findNavController().navigate(SpeechDataFragmentDirections.actionSpeechDataToHome())
+            findNavController().popBackStack()
         }
+
+        customHeaderBar(binding)
 
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
+    }
+
+    private fun customHeaderBar(binding: FragmentSpeechDataBinding) {
+        binding.vhSpeechData.imvBack.setOnClickListener {
+            if (findNavController().popBackStack().not()) {
+                requireActivity().finish()
+            }
+        }
     }
 }
